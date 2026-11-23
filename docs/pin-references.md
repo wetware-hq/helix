@@ -70,7 +70,7 @@ release     = "block " n                               # n decimal, no leading z
 value(pin)  = abi_decode(POST pin.url { "jsonrpc": "2.0", "id": 1, "method": "eth_call",
                 params: [{ to: chain.contract, data: selector(pin.field) || uint256(ref) }, hex(n)] })
 selector    = first 4 bytes of keccak256 of tokenURI(uint256) | lengthOf(uint256) | rootOf(uint256) | ownerOf(uint256)
-binds(c)    = value                           == c.object.lit     # label (tokenURI), length (decimal)
+binds(c)    = str(value)                      == c.object.lit     # label (tokenURI); length as decimal, no leading zero
             | lowercase_hex(value)            == c.object.lit     # polymer-root, no 0x
             | chain.network ":" lower(value)  == c.object.lit     # held-by, CAIP-10
 ```
