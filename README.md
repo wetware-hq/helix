@@ -68,9 +68,10 @@ Page IDs name the source database and its accession, such as `hgnc:3236`, `unipr
 A synthetic chromosome is the first-class asset of the chain. Each one is a `Bases` token (ERC-721) from [wetware-hq/bases](https://github.com/wetware-hq/bases), and its helix page is `dna:<token id>`. Its unit is the base: 1 base, n bases.
 
 - The token stores only a hash of the chromosome and its length in bases, never the sequence.
-- A chromosome only grows at its end (polymerize). Nothing is burned or rewritten.
-- Its page shows the holder, length and current hash, each read from the chain at a fixed block.
-- helix only reads tokens. Minting, growing and transferring happen in `bases`; editing a page still moves no money.
+- A sequence is fixed once committed: its hash and length never change. Nothing is burned or rewritten.
+- Polymerizable means printable: the chromosome is a real-world asset, and each print of it is recorded on the token (polymerize).
+- Its page shows the hash, length, holder and print count, each read from the chain at a fixed block.
+- helix only reads tokens. Minting, printing and transferring happen in `bases`; editing a page still moves no money.
 
 ## How facts get trusted
 

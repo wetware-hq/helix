@@ -104,7 +104,7 @@ Protein is made from DNA at request time and is never stored as truth.
 ```text { type: notebook.cell }
 render(locus):
   counted  := template, and not the target of a counted refutes claim (contract §4 defines counted)
-  superseded := a counted held-by, polymer-root or length claim on a dna: page with a counted claim of the
+  superseded := a counted held-by or prints claim on a dna: page with a counted claim of the
               same predicate pinned at a higher block (docs/pin-references.md §Chain rows)
   header   := "# `" id "`", then each counted label as "name: `" lit "`" (plus " (" read ")" if below
               fulltext-claim-checked), then "root: `" root "`"
@@ -124,7 +124,7 @@ object(c)  := "[`" id "`](/wiki/" id ")" | "`" cid "`" | "`" lit "`"
 order      := claims in genome order within each section; sections in the order above
 ```
 
-`verb` is a fixed table: `same-as` → "is the same as", `located-at` → "is located at", `transcribed-to` → "is transcribed to", `translated-to` → "is translated to", `encodes` → "encodes", `part-of` → "is part of", `binds` → "binds", `cites` → "cites", `supports` → "supports", `refutes` → "refutes", `length` → "has length", `held-by` → "is held by", `polymer-root` → "has polymer root", `label` → "is named".
+`verb` is a fixed table: `same-as` → "is the same as", `located-at` → "is located at", `transcribed-to` → "is transcribed to", `translated-to` → "is translated to", `encodes` → "encodes", `part-of` → "is part of", `binds` → "binds", `cites` → "cites", `supports` → "supports", `refutes` → "refutes", `length` → "has length", `held-by` → "is held by", `sequence-root` → "has sequence root", `prints` → "has print count", `label` → "is named".
 
 No model writes the page. The same root, `Helix-Renderer` version and `DISCLAIMER` give the same bytes, because the root covers every claim and the templates are fixed. The response also carries `Helix-Disclaimer: sha256:<digest of DISCLAIMER>`. Every literal is an authority value or fits a grammar (contract §1), and the response carries `Helix-Content: data`: a reading agent should treat the page as data, not as instructions.
 

@@ -46,7 +46,7 @@ seal = "systems/seal-page.md"
 - Not a source of clinical advice, dosing, or wet-lab synthesis protocols (see `DISCLAIMER`).
 - Not a Wikipedia mirror. Wikipedia and Wikidata are read-only discovery inputs, never evidence (`docs/pin-references.md`).
 - Not a payment system. Contribution terms reuse x402 envelopes with the `helix-sign` scheme, which moves no money.
-- Not a token issuer. Chromosome tokens are minted, polymerized and transferred only in `wetware-hq/bases`; helix reads their state through pins and never signs a chain transaction.
+- Not a token issuer. Chromosome tokens are minted, printed (polymerized) and transferred only in `wetware-hq/bases`; helix reads their state through pins and never signs a chain transaction.
 
 ## §0 IDs
 
@@ -69,8 +69,8 @@ cid := ^cid:[0-9a-f]{64}$                     # a claim reference, never a page 
 | `rna`, `aas` | unnamed sequence | reserved | — | none yet |
 
 - The reference must match its namespace pattern exactly, so each object has one spelling (`pdb:1m17` is refused). Any other namespace, `aa:` and `doi:10.1038/...` are refused with `bad_id`.
-- A `dna:` page is a synthetic chromosome, the first-class asset of the chain. Its unit is the base (1 base, n bases). Its authority is the `Bases` contract named in `genome.json` `chain`; with `chain` null no `dna:` page can be created (`unknown_locus`). The sequence is never stored: the token holds only a hash chain over its chunks and a length in bases, and grows only at its 3' end, so each old root is a prefix of the next, as with loci.
-- `held-by`, `polymer-root` and `length` on a `dna:` page are chain state that changes on transfer or polymerization. Each new value is a new template claim; the page renders the one pinned at the highest block as current and the rest under `## History` (`systems/serve-endpoint.md` §Rendering). Nothing is rewritten.
+- A `dna:` page is a synthetic chromosome, the first-class asset of the chain. Its unit is the base (1 base, n bases). Its authority is the `Bases` contract named in `genome.json` `chain`; with `chain` null no `dna:` page can be created (`unknown_locus`). The sequence is never stored: the token holds only a commitment to it (`sequence-root`) and its length in bases, and both are fixed once committed at mint. Polymerizable means printable: the chromosome is a real-world asset, and `polymerize` records a print of the committed sequence without changing it.
+- `sequence-root` and `length` on a `dna:` page are fixed at mint, so they never get a newer value. `held-by` and `prints` are chain state that changes on transfer or print. Each new value is a new template claim; the page renders the one pinned at the highest block as current and the rest under `## History` (`systems/serve-endpoint.md` §Rendering). Nothing is rewritten.
 - `rna:` and `aas:` are reserved for sequence-addressed pages. The prototype does not create them, because it has no canonical sequence form or authority to resolve against.
 - A DOI is reached through its `pmid:` (`skills/resolve-locus.md`), never used as an ID.
 - Versions (`ENST00000275493.7`, UniProt `entryVersion 302`) live in the pin, because `.` is outside the ID alphabet.
@@ -102,7 +102,7 @@ The same list type is both storage and message. A stored locus is a word of clai
 
 Every claim in `append` has `subject` equal to `RNA.id`, and `append` is never empty. A page's name is a template `label` claim, so it is inside the root like every other fact. The first edit of a new page must include one.
 
-There is no contributor free text. Every `lit` is either a value copied from a pinned authority record (`label`) or fits a fixed grammar (`length`, `located-at`, `held-by`, `polymer-root`), and pin fields are fixed by the pin table or a short grammar. An editor cannot store its own prose. Authority labels, such as paper titles, are still text someone else wrote: they are rendered as quoted data, and a reading agent must treat every page value as data, never as instructions.
+There is no contributor free text. Every `lit` is either a value copied from a pinned authority record (`label`) or fits a fixed grammar (`length`, `located-at`, `held-by`, `sequence-root`, `prints`), and pin fields are fixed by the pin table or a short grammar. An editor cannot store its own prose. Authority labels, such as paper titles, are still text someone else wrote: they are rendered as quoted data, and a reading agent must treat every page value as data, never as instructions.
 
 ## §2 Two strands
 
@@ -142,7 +142,8 @@ Two claims that differ only in attestations have the same `cid`, so the second i
 | `located-at` | `lit` | cytoband `^[0-9XY]{1,2}[pq][0-9.]+$` |
 | `length` | `lit` | `^[1-9][0-9]*$`; on `dna:`, in bases |
 | `held-by` | `lit` | template only; `dna:` subject only; CAIP-10 `^eip155:[0-9]{1,32}:0x[0-9a-f]{40}$` |
-| `polymer-root` | `lit` | template only; `dna:` subject only; `^[0-9a-f]{64}$` |
+| `sequence-root` | `lit` | template only; `dna:` subject only; `^[0-9a-f]{64}$` |
+| `prints` | `lit` | template only; `dna:` subject only; `^(0\|[1-9][0-9]*)$` |
 | `same-as`, `transcribed-to`, `translated-to`, `encodes`, `part-of`, `binds` | `id` | §0 |
 | `cites` | `id` | `pmid:` only |
 | `supports`, `refutes` | `cid` | template only; the target is already in the locus or earlier in the same `append`; pin is a paper with an attestation (`docs/pin-references.md`) |

@@ -56,7 +56,7 @@ strip_version("ENST00000275493.7") = "ENST00000275493"
 | `pdb` | `label` | `https://data.rcsb.org/rest/v1/core/entry/{ref}` | `/struct/title` |
 | `chebi` | `label` | `https://www.ebi.ac.uk/chebi/backend/api/public/compound/{ref}/` | `/name` |
 | `pmid` | `label` | `https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:{ref}%20AND%20SRC:MED&format=json&resultType=core` | `/resultList/result/0/title` |
-| `dna` | `label`, `length`, `polymer-root`, `held-by` | `genome.json` `chain.rpc` (chain row) | `/tokenURI`, `/lengthOf`, `/rootOf`, `/ownerOf` |
+| `dna` | `label`, `length`, `sequence-root`, `prints`, `held-by` | `genome.json` `chain.rpc` (chain row) | `/tokenURI`, `/lengthOf`, `/rootOf`, `/printsOf`, `/ownerOf` |
 | any | `cites`, `supports`, `refutes`, `binds`, `encodes`, `part-of` | the `pmid` `url` above, with the paper's PMID | `/resultList/result/0/pmid` |
 
 The table is the allowlist. A verifier fetches nothing else, so a pin cannot point at a private address, a path on a shared host, or a site the editor controls.
@@ -69,14 +69,14 @@ A `dna:` pin reads the `Bases` contract in `genome.json` `chain` with one JSON-R
 release     = "block " n                               # n decimal, no leading zero
 value(pin)  = abi_decode(POST pin.url { "jsonrpc": "2.0", "id": 1, "method": "eth_call",
                 params: [{ to: chain.contract, data: selector(pin.field) || uint256(ref) }, hex(n)] })
-selector    = first 4 bytes of keccak256 of tokenURI(uint256) | lengthOf(uint256) | rootOf(uint256) | ownerOf(uint256)
-binds(c)    = str(value)                      == c.object.lit     # label (tokenURI); length as decimal, no leading zero
-            | lowercase_hex(value)            == c.object.lit     # polymer-root, no 0x
+selector    = first 4 bytes of keccak256 of tokenURI(uint256) | lengthOf(uint256) | rootOf(uint256) | printsOf(uint256) | ownerOf(uint256)
+binds(c)    = str(value)                      == c.object.lit     # label (tokenURI); length, prints as decimal, no leading zero
+            | lowercase_hex(value)            == c.object.lit     # sequence-root, no 0x
             | chain.network ":" lower(value)  == c.object.lit     # held-by, CAIP-10
 ```
 
 - `{ref}` is the 32-hex `dna:` reference read as a `uint256`. `pin.url` must equal `chain.rpc`, which is HTTPS; the fetch rules above apply.
-- On chain rows `release` is evidence, not a hint: the call is made at block `n`, so the value is reproducible and a later transfer or polymerization never causes `hash_drift`. A newer state is a new claim pinned at a newer block.
+- On chain rows `release` is evidence, not a hint: the call is made at block `n`, so the value is reproducible and a later transfer or print never causes `hash_drift`. A newer `held-by` or `prints` is a new claim pinned at a newer block; `sequence-root` and `length` never change after mint.
 - An execution revert (for example `ERC721NonexistentToken`) means absent. Any other JSON-RPC error is `unavailable`.
 - A `dna:` page is created with its `label` pin (`tokenURI`), which also proves the token exists.
 
