@@ -92,7 +92,7 @@ A `GET` for a page that resolves at its authority but has no locus is `404`; a `
 }
 ```
 
-- `helix-sign` is a custom x402 scheme. Its payload is `{ rna, sig }`, with the editor key inside `rna` (`skills/transcribe-page.md`), and its verify and settle are `skills/verify-claim.md` and `systems/seal-page.md`. It moves no money, so no facilitator, chain or token is involved; `network: "helix:1"` is a valid CAIP-2 string that names this protocol.
+- `helix-sign` is a custom x402 scheme. Its payload is `{ rna, sig }`, with the editor key inside `rna` (`skills/transcribe-page.md`), and its verify and settle are `skills/verify-claim.md` and `systems/seal-page.md`. It moves no money, so no facilitator, chain or token is involved in an edit (chromosome tokens live in `wetware-hq/bases` and are only read through pins); `network: "helix:1"` is a valid CAIP-2 string that names this protocol.
 - The x402 SDK (`x402==2.29.0`) validates the `PaymentRequired` and `PaymentPayload` envelope shapes. It does not check `helix-sign` payloads; helix does.
 - `resource.url` is an HTTPS URL; `wiki://<id>` from `_study` PR #1 is a display name only, because a CAIP-2 ID is not a valid URL authority.
 - `offerSig` is the endpoint's signature over `sha256(JCS(offer))`, with `offerSig` removed from the offer first. It covers `resource`, `accepts` and every extension, so any verifier can check the whole offer and the echo without shared state. A nonce is used once: settling records it in `genome.json` `spent`, and a used or expired nonce is `expired`.
@@ -104,10 +104,13 @@ Protein is made from DNA at request time and is never stored as truth.
 ```text { type: notebook.cell }
 render(locus):
   counted  := template, and not the target of a counted refutes claim (contract §4 defines counted)
+  superseded := a counted held-by or prints claim on a dna: page with a counted claim of the
+              same predicate pinned at a higher block (docs/pin-references.md §Chain rows)
   header   := "# `" id "`", then each counted label as "name: `" lit "`" (plus " (" read ")" if below
               fulltext-claim-checked), then "root: `" root "`"
-  "## Facts"     := template claims, read >= fulltext-claim-checked, not refuted or disputed
-  "## Partial"   := other template claims not refuted or disputed, with " (" read ")"
+  "## Facts"     := template claims, read >= fulltext-claim-checked, not refuted, disputed or superseded
+  "## Partial"   := other template claims not refuted, disputed or superseded, with " (" read ")"
+  "## History"   := superseded claims, each as line(c) " (" pin.release ")"
   "## Refuted"   := targets of a counted refutes claim at fulltext-claim-checked or above
   "## Disputed"  := targets of a lower counted refutes claim, not refuted
   "## Hypotheses (not evidence)" := scratch claims not refuted or disputed
@@ -121,7 +124,7 @@ object(c)  := "[`" id "`](/wiki/" id ")" | "`" cid "`" | "`" lit "`"
 order      := claims in genome order within each section; sections in the order above
 ```
 
-`verb` is a fixed table: `same-as` → "is the same as", `located-at` → "is located at", `transcribed-to` → "is transcribed to", `translated-to` → "is translated to", `encodes` → "encodes", `part-of` → "is part of", `binds` → "binds", `cites` → "cites", `supports` → "supports", `refutes` → "refutes", `length` → "has length", `label` → "is named".
+`verb` is a fixed table: `same-as` → "is the same as", `located-at` → "is located at", `transcribed-to` → "is transcribed to", `translated-to` → "is translated to", `encodes` → "encodes", `part-of` → "is part of", `binds` → "binds", `cites` → "cites", `supports` → "supports", `refutes` → "refutes", `length` → "has length", `held-by` → "is held by", `sequence-root` → "has sequence root", `prints` → "has print count", `label` → "is named".
 
 No model writes the page. The same root, `Helix-Renderer` version and `DISCLAIMER` give the same bytes, because the root covers every claim and the templates are fixed. The response also carries `Helix-Disclaimer: sha256:<digest of DISCLAIMER>`. Every literal is an authority value or fits a grammar (contract §1), and the response carries `Helix-Content: data`: a reading agent should treat the page as data, not as instructions.
 

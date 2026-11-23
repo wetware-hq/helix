@@ -33,6 +33,7 @@ Read `DISCLAIMER` before any node. Then take the first row that covers the task 
 | Propose an edit | `skills/transcribe-page.md` → `skills/verify-claim.md` |
 | Check a claim or citation | `skills/verify-claim.md` → `docs/pin-references.md` |
 | Seal or anchor a page | `systems/seal-page.md` |
+| Mint, print (polymerize) or transfer a chromosome | `wetware-hq/bases`; its `dna:` page: `docs/pin-references.md` §Chain rows |
 | Run the endpoint | `systems/serve-endpoint.md` |
 | Traverse without reading prose | `ooc/helix.og` |
 | Anything else, or a conflict | `docs/follow-agent-contract.md` |

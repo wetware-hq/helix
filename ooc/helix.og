@@ -1,11 +1,11 @@
 ::meta
 title: helix route and page index
 version: 1
-updated: 2026-11-23
+updated: 2026-11-24
 domain: helix|wiki|central-dogma
 scope: all
 governs: docs/follow-agent-contract.md
-checksum: sha256:41cbb5180ffa3644ffdf03834cbea75edca1e4fa46a75c9a5de1fd5d5273d7ee
+checksum: sha256:6f695ae79f8f35c66067fe4611725c95e80a97d5f5a82fd3cc938e1b933cddc5
 ::end
 
 ::schema
@@ -17,8 +17,8 @@ scope-levels: [all, reader, editor, verifier, sealer]
 ::index
 # id | type | scope | conf | keywords
 banner | meta | all | 1.00 | academic, research, oversight, banner
-contract | stage | all | 1.00 | ids, dna-rna-protein, strands, algebra, flow-laws, codes, predicates
-pins | stage | all | 1.00 | pin, ceiling, retraction-gate, no-tertiary
+contract | stage | all | 1.00 | ids, dna-rna-protein, dna-chromosome, strands, algebra, flow-laws, codes, predicates
+pins | stage | all | 1.00 | pin, chain-row, ceiling, retraction-gate, no-tertiary
 resolve | stage | all | 1.00 | name, accession, exact, unresolved, unavailable
 transcribe | stage | all | 1.00 | 402, echo, append-only, idempotency-key
 verify | stage | all | 1.00 | proofread, read-only, first-failing-code
@@ -201,5 +201,7 @@ on-fail: ->[:requires] contract
 ::changelog
 2026-11-23|added|route and 4 pages|WET-125 prototype
 2026-11-23|note|hypothesis edges are scratch claims, not facts|traverse as leads only
+2026-11-23|added|dna: chromosome pages backed by Bases tokens|WET-132
+2026-11-24|changed|dna: sequence fixed at mint; polymerize records a print|WET-132
 ::end
 ::end
