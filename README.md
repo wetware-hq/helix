@@ -63,6 +63,15 @@ root: `3b3005284444aa04752f66e39d5bea449a31ca6cbfc0323143f6d1dc850265ea`
 
 Page IDs name the source database and its accession, such as `hgnc:3236`, `uniprot:P00533`, `pdb:1M17` or `pmid:4913914`. Each thing has exactly one ID. The `root` is a fingerprint of every fact on the page, so anyone can check that a page has not been tampered with.
 
+## Chromosomes as assets
+
+A synthetic chromosome is the first-class asset of the chain. Each one is a `Bases` token (ERC-721) from [wetware-hq/bases](https://github.com/wetware-hq/bases), and its helix page is `dna:<token id>`. Its unit is the base: 1 base, n bases.
+
+- The token stores only a hash of the chromosome and its length in bases, never the sequence.
+- A chromosome only grows at its end (polymerize). Nothing is burned or rewritten.
+- Its page shows the holder, length and current hash, each read from the chain at a fixed block.
+- helix only reads tokens. Minting, growing and transferring happen in `bases`; editing a page still moves no money.
+
 ## How facts get trusted
 
 Each template fact carries a **pin**: the source URL, the exact field, the source release, and a hash of the value. When someone proposes the fact, a checker fetches the source again and confirms the value matches.
@@ -115,6 +124,7 @@ The editor, verifier and sealer must be three different keys, so nobody can appr
 
 - This is a prototype specification. There is no running server yet, and example URLs use `helix.example`.
 - `genome.json` has four EGFR pages and no role keys, so no edit can be sealed until verifier and sealer keys are added.
+- `genome.json` `chain` is `null` until `Bases` is deployed, so no `dna:` page can be created yet.
 - If you edit `genome.json` by hand, recompute each page's `root` and the checksum in `ooc/helix.og` (see contract §3).
 
 ## Glossary

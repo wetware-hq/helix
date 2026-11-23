@@ -92,7 +92,7 @@ A `GET` for a page that resolves at its authority but has no locus is `404`; a `
 }
 ```
 
-- `helix-sign` is a custom x402 scheme. Its payload is `{ rna, sig }`, with the editor key inside `rna` (`skills/transcribe-page.md`), and its verify and settle are `skills/verify-claim.md` and `systems/seal-page.md`. It moves no money, so no facilitator, chain or token is involved; `network: "helix:1"` is a valid CAIP-2 string that names this protocol.
+- `helix-sign` is a custom x402 scheme. Its payload is `{ rna, sig }`, with the editor key inside `rna` (`skills/transcribe-page.md`), and its verify and settle are `skills/verify-claim.md` and `systems/seal-page.md`. It moves no money, so no facilitator, chain or token is involved in an edit (chromosome tokens live in `wetware-hq/bases` and are only read through pins); `network: "helix:1"` is a valid CAIP-2 string that names this protocol.
 - The x402 SDK (`x402==2.29.0`) validates the `PaymentRequired` and `PaymentPayload` envelope shapes. It does not check `helix-sign` payloads; helix does.
 - `resource.url` is an HTTPS URL; `wiki://<id>` from `_study` PR #1 is a display name only, because a CAIP-2 ID is not a valid URL authority.
 - `offerSig` is the endpoint's signature over `sha256(JCS(offer))`, with `offerSig` removed from the offer first. It covers `resource`, `accepts` and every extension, so any verifier can check the whole offer and the echo without shared state. A nonce is used once: settling records it in `genome.json` `spent`, and a used or expired nonce is `expired`.

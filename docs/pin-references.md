@@ -13,7 +13,7 @@ A pin says where a claim can be re-read, what value was read there, and how far 
   "role": "define pins, source ceilings, attestations and the retraction gate",
   "reads": ["claim", "authority record"],
   "writes": [],
-  "must": ["pin fixed by the pin table", "record rows: value equals the claim object", "paper rows: bind by attestation", "three-source retraction gate"],
+  "must": ["pin fixed by the pin table", "chain rows: eth_call at the pinned block", "record rows: value equals the claim object", "paper rows: bind by attestation", "three-source retraction gate"],
   "check": ["H3", "H6", "H7"]
 }
 ```
@@ -56,9 +56,29 @@ strip_version("ENST00000275493.7") = "ENST00000275493"
 | `pdb` | `label` | `https://data.rcsb.org/rest/v1/core/entry/{ref}` | `/struct/title` |
 | `chebi` | `label` | `https://www.ebi.ac.uk/chebi/backend/api/public/compound/{ref}/` | `/name` |
 | `pmid` | `label` | `https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:{ref}%20AND%20SRC:MED&format=json&resultType=core` | `/resultList/result/0/title` |
+| `dna` | `label`, `length`, `polymer-root`, `held-by` | `genome.json` `chain.rpc` (chain row) | `/tokenURI`, `/lengthOf`, `/rootOf`, `/ownerOf` |
 | any | `cites`, `supports`, `refutes`, `binds`, `encodes`, `part-of` | the `pmid` `url` above, with the paper's PMID | `/resultList/result/0/pmid` |
 
 The table is the allowlist. A verifier fetches nothing else, so a pin cannot point at a private address, a path on a shared host, or a site the editor controls.
+
+## Chain rows
+
+A `dna:` pin reads the `Bases` contract in `genome.json` `chain` with one JSON-RPC `eth_call`, not a `GET`.
+
+```text { type: notebook.cell }
+release     = "block " n                               # n decimal, no leading zero
+value(pin)  = abi_decode(POST pin.url { "jsonrpc": "2.0", "id": 1, "method": "eth_call",
+                params: [{ to: chain.contract, data: selector(pin.field) || uint256(ref) }, hex(n)] })
+selector    = first 4 bytes of keccak256 of tokenURI(uint256) | lengthOf(uint256) | rootOf(uint256) | ownerOf(uint256)
+binds(c)    = value                           == c.object.lit     # label (tokenURI), length (decimal)
+            | lowercase_hex(value)            == c.object.lit     # polymer-root, no 0x
+            | chain.network ":" lower(value)  == c.object.lit     # held-by, CAIP-10
+```
+
+- `{ref}` is the 32-hex `dna:` reference read as a `uint256`. `pin.url` must equal `chain.rpc`, which is HTTPS; the fetch rules above apply.
+- On chain rows `release` is evidence, not a hint: the call is made at block `n`, so the value is reproducible and a later transfer or polymerization never causes `hash_drift`. A newer state is a new claim pinned at a newer block.
+- An execution revert (for example `ERC721NonexistentToken`) means absent. Any other JSON-RPC error is `unavailable`.
+- A `dna:` page is created with its `label` pin (`tokenURI`), which also proves the token exists.
 
 ## Papers
 
@@ -73,6 +93,7 @@ Papers have no JSON field that states a finding, so `binds` cannot be computed f
 | Source | Pinnable | Ceiling |
 |---|---|---|
 | UniProtKB, HGNC, Ensembl, wwPDB, ChEBI JSON record | yes | `fulltext-claim-checked` |
+| `Bases` contract state at a pinned block (chain row) | yes | `fulltext-claim-checked` (the chain is the record) |
 | Open-access paper (Europe PMC `isOpenAccess` = `Y`) | yes | `fulltext-claim-checked` |
 | Paywalled paper | yes | `abstract-read` |
 | Paper `label` (title from Europe PMC) | yes | `fulltext-claim-checked` (the title is the record) |
