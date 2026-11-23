@@ -1,0 +1,205 @@
+::meta
+title: helix route and page index
+version: 1
+updated: 2026-11-23
+domain: helix|wiki|central-dogma
+scope: all
+governs: docs/follow-agent-contract.md
+checksum: sha256:41cbb5180ffa3644ffdf03834cbea75edca1e4fa46a75c9a5de1fd5d5273d7ee
+::end
+
+::schema
+node-types: [stage, page, assertion, meta]
+edge-types: [requires, precedes, same-as, transcribed-to, translated-to, encodes, part-of, binds, cites, hypothesis]
+scope-levels: [all, reader, editor, verifier, sealer]
+::end
+
+::index
+# id | type | scope | conf | keywords
+banner | meta | all | 1.00 | academic, research, oversight, banner
+contract | stage | all | 1.00 | ids, dna-rna-protein, strands, algebra, flow-laws, codes, predicates
+pins | stage | all | 1.00 | pin, ceiling, retraction-gate, no-tertiary
+resolve | stage | all | 1.00 | name, accession, exact, unresolved, unavailable
+transcribe | stage | all | 1.00 | 402, echo, append-only, idempotency-key
+verify | stage | all | 1.00 | proofread, read-only, first-failing-code
+seal | stage | all | 1.00 | settle, lock, root-fold, receipt
+serve | stage | all | 1.00 | http, get, post-402, render, agent-card
+hgnc:3236 | page | all | 1.00 | epidermal growth factor receptor
+ensembl:ENSG00000146648 | page | all | 1.00 | egfr
+ensembl:ENST00000275493 | page | all | 1.00 | egfr-201
+uniprot:P00533 | page | all | 1.00 | epidermal growth factor receptor
+stop | assertion | all | 1.00 | endpoint, halt, sufficient
+__changelog | meta | all | 1.00 | changes, version
+::end
+
+::node [id=banner type=meta confidence=1.00 scope=all updated=2026-11-23]
+::dense
+academic|research|licensed-oversight
+::end
+::warning
+Read DISCLAIMER before any node.
+::end
+::edges
+->[:precedes] contract
+::end
+::end
+
+::node [id=contract type=stage confidence=1.00 scope=all updated=2026-11-23]
+::dense
+ids|dna-rna-protein|strands|algebra|flow-laws|codes|predicates
+::end
+::full
+Load docs/follow-agent-contract.md.
+::end
+::edges
+->[:requires] docs/follow-agent-contract.md
+->[:precedes] pins
+->[:precedes] resolve
+->[:precedes] serve
+::end
+::end
+
+::node [id=pins type=stage confidence=1.00 scope=all updated=2026-11-23]
+::dense
+pin|ceiling|retraction-gate|no-tertiary
+::end
+::full
+Load docs/pin-references.md.
+::end
+::edges
+->[:requires] docs/pin-references.md
+->[:precedes] verify
+::end
+::end
+
+::node [id=resolve type=stage confidence=1.00 scope=all updated=2026-11-23]
+::dense
+name|accession|exact|unresolved|unavailable
+::end
+::full
+Load skills/resolve-locus.md.
+::end
+::edges
+->[:requires] skills/resolve-locus.md
+->[:precedes] transcribe
+::end
+::end
+
+::node [id=transcribe type=stage confidence=1.00 scope=all updated=2026-11-23]
+::dense
+402|echo|append-only|idempotency-key
+::end
+::full
+Load skills/transcribe-page.md.
+::end
+::edges
+->[:requires] skills/transcribe-page.md
+->[:precedes] verify
+::end
+::end
+
+::node [id=verify type=stage confidence=1.00 scope=all updated=2026-11-23]
+::dense
+proofread|read-only|first-failing-code
+::end
+::full
+Load skills/verify-claim.md.
+::end
+::edges
+->[:requires] skills/verify-claim.md
+->[:precedes] seal
+::end
+::end
+
+::node [id=seal type=stage confidence=1.00 scope=all updated=2026-11-23]
+::dense
+settle|lock|root-fold|receipt
+::end
+::full
+Load systems/seal-page.md.
+::end
+::edges
+->[:requires] systems/seal-page.md
+->[:precedes] serve
+::end
+::end
+
+::node [id=serve type=stage confidence=1.00 scope=all updated=2026-11-23]
+::dense
+http|get|post-402|render|agent-card
+::end
+::full
+Load systems/serve-endpoint.md.
+::end
+::edges
+->[:requires] systems/serve-endpoint.md
+->[:precedes] stop
+::end
+::end
+
+::node [id=hgnc:3236 type=page confidence=1.00 scope=all updated=2026-11-23]
+::dense
+root:63d056ca76aeb4d1fa2f20d9d9beb9993b9977f2ddbbfeacb74e8b8e74656793|claims:3
+::end
+::full
+epidermal growth factor receptor. GET /wiki/hgnc:3236
+::end
+::edges
+->[:same-as] ensembl:ENSG00000146648
+::end
+::end
+
+::node [id=ensembl:ENSG00000146648 type=page confidence=1.00 scope=all updated=2026-11-23]
+::dense
+root:0f73daceef7f38db2e740bb8c2a14666b74d524f39872eaf770f7af8791c1c65|claims:2
+::end
+::full
+EGFR. GET /wiki/ensembl:ENSG00000146648
+::end
+::edges
+->[:transcribed-to] ensembl:ENST00000275493
+::end
+::end
+
+::node [id=ensembl:ENST00000275493 type=page confidence=1.00 scope=all updated=2026-11-23]
+::dense
+root:7a15d53a08e11637edfa28adf83e67f0f651f28f9802060203c6bc1c73cfad39|claims:2
+::end
+::full
+EGFR-201. GET /wiki/ensembl:ENST00000275493
+::end
+::edges
+->[:translated-to] uniprot:P00533
+::end
+::end
+
+::node [id=uniprot:P00533 type=page confidence=1.00 scope=all updated=2026-11-23]
+::dense
+root:3b3005284444aa04752f66e39d5bea449a31ca6cbfc0323143f6d1dc850265ea|claims:3
+::end
+::full
+Epidermal growth factor receptor. GET /wiki/uniprot:P00533
+::end
+::edges
+->[:hypothesis] uniprot:P01133
+::end
+::end
+
+::node [id=stop type=assertion confidence=1.00 scope=all updated=2026-11-23]
+::dense
+stop|endpoint
+::end
+::assertion
+trigger: after [serve]
+check: endpoint("systems/serve-endpoint.md")
+on-pass: halt
+on-fail: ->[:requires] contract
+::end
+::end
+
+::node [id=__changelog type=meta confidence=1.00 scope=all updated=2026-11-23]
+::changelog
+2026-11-23|added|route and 4 pages|WET-125 prototype
+2026-11-23|note|hypothesis edges are scratch claims, not facts|traverse as leads only
+::end
+::end
