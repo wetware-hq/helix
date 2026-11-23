@@ -104,10 +104,13 @@ Protein is made from DNA at request time and is never stored as truth.
 ```text { type: notebook.cell }
 render(locus):
   counted  := template, and not the target of a counted refutes claim (contract §4 defines counted)
+  superseded := a counted held-by, polymer-root or length claim on a dna: page with a counted claim of the
+              same predicate pinned at a higher block (docs/pin-references.md §Chain rows)
   header   := "# `" id "`", then each counted label as "name: `" lit "`" (plus " (" read ")" if below
               fulltext-claim-checked), then "root: `" root "`"
-  "## Facts"     := template claims, read >= fulltext-claim-checked, not refuted or disputed
-  "## Partial"   := other template claims not refuted or disputed, with " (" read ")"
+  "## Facts"     := template claims, read >= fulltext-claim-checked, not refuted, disputed or superseded
+  "## Partial"   := other template claims not refuted, disputed or superseded, with " (" read ")"
+  "## History"   := superseded claims, each as line(c) " (" pin.release ")"
   "## Refuted"   := targets of a counted refutes claim at fulltext-claim-checked or above
   "## Disputed"  := targets of a lower counted refutes claim, not refuted
   "## Hypotheses (not evidence)" := scratch claims not refuted or disputed

@@ -70,7 +70,7 @@ cid := ^cid:[0-9a-f]{64}$                     # a claim reference, never a page 
 
 - The reference must match its namespace pattern exactly, so each object has one spelling (`pdb:1m17` is refused). Any other namespace, `aa:` and `doi:10.1038/...` are refused with `bad_id`.
 - A `dna:` page is a synthetic chromosome, the first-class asset of the chain. Its unit is the base (1 base, n bases). Its authority is the `Bases` contract named in `genome.json` `chain`; with `chain` null no `dna:` page can be created (`unknown_locus`). The sequence is never stored: the token holds only a hash chain over its chunks and a length in bases, and grows only at its 3' end, so each old root is a prefix of the next, as with loci.
-- `held-by`, `polymer-root` and `length` on a `dna:` page are chain state that changes on transfer or polymerization. Each new value is a new template claim; the page renders the one pinned at the highest block as current and the rest as history. Nothing is rewritten.
+- `held-by`, `polymer-root` and `length` on a `dna:` page are chain state that changes on transfer or polymerization. Each new value is a new template claim; the page renders the one pinned at the highest block as current and the rest under `## History` (`systems/serve-endpoint.md` §Rendering). Nothing is rewritten.
 - `rna:` and `aas:` are reserved for sequence-addressed pages. The prototype does not create them, because it has no canonical sequence form or authority to resolve against.
 - A DOI is reached through its `pmid:` (`skills/resolve-locus.md`), never used as an ID.
 - Versions (`ENST00000275493.7`, UniProt `entryVersion 302`) live in the pin, because `.` is outside the ID alphabet.
