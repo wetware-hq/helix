@@ -35,6 +35,7 @@ Read `DISCLAIMER` before any node. Then take the first row that covers the task 
 | Seal or anchor a page | `systems/seal-page.md` |
 | Mint, print (polymerize) or transfer a chromosome | `wetware-hq/bases`; its `dna:` page: `docs/pin-references.md` §Chain rows |
 | Run the endpoint | `systems/serve-endpoint.md` |
+| Place helix in the wetware stack, or name a value from web, bases or tesseract | `docs/organize-stack.md` |
 | Traverse without reading prose | `ooc/helix.og` |
 | Anything else, or a conflict | `docs/follow-agent-contract.md` |
 
