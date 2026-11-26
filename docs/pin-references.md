@@ -78,6 +78,8 @@ logs(pin)   = POST pin.url { "jsonrpc": "2.0", "id": 1, "method": "eth_getLogs",
                            topics: [keccak256("Polymerized(uint256,address,bytes32,uint64,bytes32)"), uint256(ref)] }] }
 binds(c)    = some log in logs(pin) with abi_decode(data) = (receipt, prints, head)
               and str(prints) ":" lowercase_hex(receipt) == c.object.lit     # printed
+value(pin)  = { "prints": str(prints), "receipt": lowercase_hex(receipt), "head": lowercase_hex(head) }
+                                                  # printed: the matching log, so digest(pin) is defined
 ```
 
 - `{ref}` is the 32-hex `dna:` reference read as a `uint256`. `pin.url` must equal `chain.rpc`, which is HTTPS; the fetch rules above apply.
