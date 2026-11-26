@@ -66,7 +66,7 @@ order,check,code
 - Steps 0 and 0a need no parsing beyond the signature header and sizes, so oversized or unsigned requests are refused before any hashing or network call.
 - If steps 0 to 1 fail before `rna` or the offer can be parsed, the answer is an HTTP `400` error body, not a `VerifyResponse`.
 - `systems/seal-page.md` repeats steps 3, 10 and 12 under its lock, and decides `replay`, because the genome can change between verify and settle.
-- For a `dna:` page, steps 15 to 17 use the chain rows in `docs/pin-references.md`: one `eth_call` per pin at its pinned block.
+- For a `dna:` page, steps 15 to 17 use the chain rows in `docs/pin-references.md`: one `eth_call` per pin at its pinned block, or one `eth_getLogs` over that block for `printed`.
 - An authority that does not answer at step 15, 16, 17 or 19 gives `unavailable`: never a pass and never a refusal of the claim.
 - `unsafe` has no step: no current claim can hold free text (contract §1).
 

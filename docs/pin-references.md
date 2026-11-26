@@ -56,14 +56,14 @@ strip_version("ENST00000275493.7") = "ENST00000275493"
 | `pdb` | `label` | `https://data.rcsb.org/rest/v1/core/entry/{ref}` | `/struct/title` |
 | `chebi` | `label` | `https://www.ebi.ac.uk/chebi/backend/api/public/compound/{ref}/` | `/name` |
 | `pmid` | `label` | `https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:{ref}%20AND%20SRC:MED&format=json&resultType=core` | `/resultList/result/0/title` |
-| `dna` | `label`, `length`, `sequence-root`, `prints`, `held-by` | `genome.json` `chain.rpc` (chain row) | `/tokenURI`, `/lengthOf`, `/rootOf`, `/printsOf`, `/ownerOf` |
+| `dna` | `label`, `length`, `sequence-root`, `prints`, `held-by`, `printed` | `genome.json` `chain.rpc` (chain row) | `/tokenURI`, `/lengthOf`, `/rootOf`, `/printsOf`, `/ownerOf`, `/Polymerized` |
 | any | `cites`, `supports`, `refutes`, `binds`, `encodes`, `part-of` | the `pmid` `url` above, with the paper's PMID | `/resultList/result/0/pmid` |
 
 The table is the allowlist. A verifier fetches nothing else, so a pin cannot point at a private address, a path on a shared host, or a site the editor controls.
 
 ## Chain rows
 
-A `dna:` pin reads the `Bases` contract in `genome.json` `chain` with one JSON-RPC `eth_call`, not a `GET`.
+A `dna:` pin reads the `Bases` contract in `genome.json` `chain` with one JSON-RPC `eth_call`, not a `GET`; a `printed` pin reads one block's logs with `eth_getLogs`.
 
 ```text { type: notebook.cell }
 release     = "block " n                               # n decimal, no leading zero
@@ -73,10 +73,19 @@ selector    = first 4 bytes of keccak256 of tokenURI(uint256) | lengthOf(uint256
 binds(c)    = str(value)                      == c.object.lit     # label (tokenURI); length, prints as decimal, no leading zero
             | lowercase_hex(value)            == c.object.lit     # sequence-root, no 0x
             | chain.network ":" lower(value)  == c.object.lit     # held-by, CAIP-10
+logs(pin)   = POST pin.url { "jsonrpc": "2.0", "id": 1, "method": "eth_getLogs",
+                params: [{ address: chain.contract, fromBlock: hex(n), toBlock: hex(n),
+                           topics: [keccak256("Polymerized(uint256,address,bytes32,uint64,bytes32)"), uint256(ref)] }] }
+binds(c)    = some log in logs(pin) with abi_decode(data) = (receipt, prints, head)
+              and str(prints) ":" lowercase_hex(receipt) == c.object.lit     # printed
+value(pin)  = { "prints": str(prints), "receipt": lowercase_hex(receipt), "head": lowercase_hex(head) }
+                                                  # printed: the matching log, so digest(pin) is defined
 ```
 
 - `{ref}` is the 32-hex `dna:` reference read as a `uint256`. `pin.url` must equal `chain.rpc`, which is HTTPS; the fetch rules above apply.
 - On chain rows `release` is evidence, not a hint: the call is made at block `n`, so the value is reproducible and a later transfer or print never causes `hash_drift`. A newer `held-by` or `prints` is a new claim pinned at a newer block; `sequence-root` and `length` never change after mint.
+- A chain-row pin's block `n` must be finalized: at or below `eth_getBlockByNumber("finalized", false).number` read from `chain.rpc` once per edit. A later block is `unavailable`, so a reorganization cannot remove a value after it is sealed.
+- A `printed` pin is evidence of one print: a log at block `n` cannot change, so it is never superseded and never causes `hash_drift`. No log matching the claim is `evidence_mismatch`.
 - An execution revert (for example `ERC721NonexistentToken`) means absent. Any other JSON-RPC error is `unavailable`.
 - A `dna:` page is created with its `label` pin (`tokenURI`), which also proves the token exists.
 
