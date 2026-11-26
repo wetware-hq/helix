@@ -111,6 +111,7 @@ The editor, verifier and sealer must be three different keys, so nobody can appr
 | [`docs/read-repository.md`](docs/read-repository.md) | Where to start: which file to read for which task. |
 | [`docs/follow-agent-contract.md`](docs/follow-agent-contract.md) | The rulebook. It wins over every other file if they disagree. |
 | [`docs/pin-references.md`](docs/pin-references.md) | Which sources count as evidence, and how far each can be trusted. |
+| [`docs/organize-stack.md`](docs/organize-stack.md) | Where helix sits in the wetware stack, and what each lower layer contributes to a `dna:` page. |
 | [`skills/resolve-locus.md`](skills/resolve-locus.md) | Turning a name like "EGFR" into an exact page ID. |
 | [`skills/transcribe-page.md`](skills/transcribe-page.md) | Building and signing an edit. |
 | [`skills/verify-claim.md`](skills/verify-claim.md) | Checking an edit against its sources. |

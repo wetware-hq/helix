@@ -1,11 +1,11 @@
 ::meta
 title: helix route and page index
-version: 1
+version: 2
 updated: 2026-11-26
 domain: helix|wiki|central-dogma
 scope: all
 governs: docs/follow-agent-contract.md
-checksum: sha256:bdfef59726bb5f8d655ee0936f9eaf2c9826bd25865c00b0b910a1433f9b7cd1
+checksum: sha256:48def576616f3610aa5a2994abeb517a01d17e36a234d6d50b00e9bfaba6c8b5
 ::end
 
 ::schema
@@ -24,6 +24,7 @@ transcribe | stage | all | 1.00 | 402, echo, append-only, idempotency-key
 verify | stage | all | 1.00 | proofread, read-only, first-failing-code
 seal | stage | all | 1.00 | settle, lock, root-fold, receipt
 serve | stage | all | 1.00 | http, get, post-402, render, agent-card
+stack | stage | all | 1.00 | wetware-stack, dna-primitive, chain-root, sequence-root, no-bases, tesseract, web, bases
 hgnc:3236 | page | all | 1.00 | epidermal growth factor receptor
 ensembl:ENSG00000146648 | page | all | 1.00 | egfr
 ensembl:ENST00000275493 | page | all | 1.00 | egfr-201
@@ -137,6 +138,19 @@ Load systems/serve-endpoint.md.
 ::end
 ::end
 
+::node [id=stack type=stage confidence=1.00 scope=all updated=2026-11-26]
+::dense
+primitive=web:dna.md|sequence-root=bases-root=sha256(salt32||seq)|!=sha256(seq)|reach-by-token-id|no-bases
+::end
+::full
+Load docs/organize-stack.md.
+::end
+::edges
+->[:requires] docs/organize-stack.md
+->[:requires] contract
+::end
+::end
+
 ::node [id=hgnc:3236 type=page confidence=1.00 scope=all updated=2026-11-23]
 ::dense
 root:63d056ca76aeb4d1fa2f20d9d9beb9993b9977f2ddbbfeacb74e8b8e74656793|claims:3
@@ -204,6 +218,7 @@ on-fail: ->[:requires] contract
 2026-11-23|added|dna: chromosome pages backed by Bases tokens|WET-132
 2026-11-24|changed|dna: sequence fixed at mint; polymerize records a print|WET-132
 2026-11-26|added|dna: printed (loop1 receipt per print) and scratch glyph (cgr1)|WET-139
+2026-11-26|added|stack map: helix over the DNA primitive; sequence-root is a chain root|WET-139
 2026-11-26|added|dna: scratch plan (tess1 plan root, machine, parts); binds by subject, sequence-root is salted|WET-139
 ::end
 ::end
