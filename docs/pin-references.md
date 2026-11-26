@@ -84,6 +84,7 @@ value(pin)  = { "prints": str(prints), "receipt": lowercase_hex(receipt), "head"
 
 - `{ref}` is the 32-hex `dna:` reference read as a `uint256`. `pin.url` must equal `chain.rpc`, which is HTTPS; the fetch rules above apply.
 - On chain rows `release` is evidence, not a hint: the call is made at block `n`, so the value is reproducible and a later transfer or print never causes `hash_drift`. A newer `held-by` or `prints` is a new claim pinned at a newer block; `sequence-root` and `length` never change after mint.
+- A chain-row pin's block `n` must be finalized: at or below `eth_getBlockByNumber("finalized", false).number` read from `chain.rpc` once per edit. A later block is `unavailable`, so a reorganization cannot remove a value after it is sealed.
 - A `printed` pin is evidence of one print: a log at block `n` cannot change, so it is never superseded and never causes `hash_drift`. No log matching the claim is `evidence_mismatch`.
 - An execution revert (for example `ERC721NonexistentToken`) means absent. Any other JSON-RPC error is `unavailable`.
 - A `dna:` page is created with its `label` pin (`tokenURI`), which also proves the token exists.
