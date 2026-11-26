@@ -124,7 +124,7 @@ object(c)  := "[`" id "`](/wiki/" id ")" | "`" cid "`" | "`" lit "`"
 order      := claims in genome order within each section; sections in the order above
 ```
 
-`verb` is a fixed table: `same-as` → "is the same as", `located-at` → "is located at", `transcribed-to` → "is transcribed to", `translated-to` → "is translated to", `encodes` → "encodes", `part-of` → "is part of", `binds` → "binds", `cites` → "cites", `supports` → "supports", `refutes` → "refutes", `length` → "has length", `held-by` → "is held by", `sequence-root` → "has sequence root", `prints` → "has print count", `printed` → "printed", `glyph` → "is expected to look like", `label` → "is named".
+`verb` is a fixed table: `same-as` → "is the same as", `located-at` → "is located at", `transcribed-to` → "is transcribed to", `translated-to` → "is translated to", `encodes` → "encodes", `part-of` → "is part of", `binds` → "binds", `cites` → "cites", `supports` → "supports", `refutes` → "refutes", `length` → "has length", `held-by` → "is held by", `sequence-root` → "has sequence root", `prints` → "has print count", `printed` → "printed", `plan` → "would be built by", `glyph` → "is expected to look like", `label` → "is named".
 
 No model writes the page. The same root, `Helix-Renderer` version and `DISCLAIMER` give the same bytes, because the root covers every claim and the templates are fixed. The response also carries `Helix-Disclaimer: sha256:<digest of DISCLAIMER>`. Every literal is an authority value or fits a grammar (contract §1), and the response carries `Helix-Content: data`: a reading agent should treat the page as data, not as instructions.
 
