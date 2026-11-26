@@ -13,7 +13,7 @@ Unlike a normal wiki:
 - **Every fact points to its source.** Each fact records exactly where it came from (for example a field in a UniProt record), and the checker re-reads that source before accepting the fact.
 - **Nothing is ever deleted or rewritten.** Pages only grow. A wrong fact is not erased; a new fact is added that refutes it.
 - **Nobody writes free text.** Pages are built from structured facts, so there is no place for opinions, made-up prose or hidden instructions.
-- **Guesses are allowed, but kept apart.** Agents can record hypotheses, and these are always shown under "Hypotheses (not evidence)", never as facts.
+- **Guesses are allowed, but kept apart.** Agents can record hypotheses, and these are always shown under "Hypotheses (not evidence)", never as facts. A `plan` — how an agent would build a chromosome, from [`wetware-hq/tesseract`](https://github.com/wetware-hq/tesseract) — is one of these: a proposal, until a print reads the sequence back.
 
 This repository is a **specbase**: a set of documents that define how the wiki works. There is no app and no server code here yet. An agent reads these files and follows them to serve, edit or check pages.
 

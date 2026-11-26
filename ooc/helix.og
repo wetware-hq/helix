@@ -5,7 +5,7 @@ updated: 2026-11-26
 domain: helix|wiki|central-dogma
 scope: all
 governs: docs/follow-agent-contract.md
-checksum: sha256:14d1a002a9a2181b9776c7a7a6a72f2177222d39f039fe515d74190b5e7545f6
+checksum: sha256:bdfef59726bb5f8d655ee0936f9eaf2c9826bd25865c00b0b910a1433f9b7cd1
 ::end
 
 ::schema
@@ -17,7 +17,7 @@ scope-levels: [all, reader, editor, verifier, sealer]
 ::index
 # id | type | scope | conf | keywords
 banner | meta | all | 1.00 | academic, research, oversight, banner
-contract | stage | all | 1.00 | ids, dna-rna-protein, dna-chromosome, printed, glyph, strands, algebra, flow-laws, codes, predicates
+contract | stage | all | 1.00 | ids, dna-rna-protein, dna-chromosome, printed, plan, glyph, strands, algebra, flow-laws, codes, predicates
 pins | stage | all | 1.00 | pin, chain-row, ceiling, retraction-gate, no-tertiary
 resolve | stage | all | 1.00 | name, accession, exact, unresolved, unavailable
 transcribe | stage | all | 1.00 | 402, echo, append-only, idempotency-key
@@ -204,5 +204,6 @@ on-fail: ->[:requires] contract
 2026-11-23|added|dna: chromosome pages backed by Bases tokens|WET-132
 2026-11-24|changed|dna: sequence fixed at mint; polymerize records a print|WET-132
 2026-11-26|added|dna: printed (loop1 receipt per print) and scratch glyph (cgr1)|WET-139
+2026-11-26|added|dna: scratch plan (tess1 plan root, machine, parts); binds by subject, sequence-root is salted|WET-139
 ::end
 ::end
