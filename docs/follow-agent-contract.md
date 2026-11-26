@@ -149,7 +149,7 @@ Two claims that differ only in attestations have the same `cid`, so the second i
 | `prints` | `lit` | template only; `dna:` subject only; `^(0\|[1-9][0-9]*)$` |
 | `printed` | `lit` | template only; `dna:` subject only; print number and receipt, `^[1-9][0-9]*:[0-9a-f]{64}$` |
 | `plan` | `lit` | scratch only; `dna:` subject only; `^tess1:[0-9a-f]{64} [a-z0-9][a-z0-9-]{1,30} [1-9][0-9]{0,5}$` — plan root, machine id, parts |
-| `glyph` | `lit` | scratch only; a `cgr1` grid, rows top to bottom joined by `/`: `^k=[1-3] [ .:=+*#%@-]{2,8}(/[ .:=+*#%@-]{2,8}){1,7}$`, with 2^k rows of 2^k characters |
+| `glyph` | `lit` | scratch only; `dna:` subject only; a `cgr1` grid, rows top to bottom joined by `/`: `^k=[1-3] [ .:=+*#%@-]{2,8}(/[ .:=+*#%@-]{2,8}){1,7}$`, with 2^k rows of 2^k characters |
 | `same-as`, `transcribed-to`, `translated-to`, `encodes`, `part-of`, `binds` | `id` | §0 |
 | `cites` | `id` | `pmid:` only |
 | `supports`, `refutes` | `cid` | template only; the target is already in the locus or earlier in the same `append`; pin is a paper with an attestation (`docs/pin-references.md`) |
