@@ -21,6 +21,7 @@ Read a page's current terms, then build and sign one RNA edit that only appends 
 ## Graph
 
 - ← [resolve-locus.md](resolve-locus.md)
+- ← [../campaigns/pace-frontier.md](../campaigns/pace-frontier.md)
 - → [verify-claim.md](verify-claim.md)
 
 ## Indications

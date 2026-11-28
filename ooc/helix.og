@@ -1,11 +1,11 @@
 ::meta
 title: helix route and page index
-version: 2
-updated: 2026-11-26
-domain: helix|wiki|central-dogma
+version: 3
+updated: 2026-11-28
+domain: helix|wiki|central-dogma|campaign
 scope: all
 governs: docs/follow-agent-contract.md
-checksum: sha256:48def576616f3610aa5a2994abeb517a01d17e36a234d6d50b00e9bfaba6c8b5
+checksum: sha256:3fadd5f866e7eeee3c5c0efb13280d005b57c293ce99048d7d4b643806d005ef
 ::end
 
 ::schema
@@ -25,6 +25,8 @@ verify | stage | all | 1.00 | proofread, read-only, first-failing-code
 seal | stage | all | 1.00 | settle, lock, root-fold, receipt
 serve | stage | all | 1.00 | http, get, post-402, render, agent-card
 stack | stage | all | 1.00 | wetware-stack, dna-primitive, chain-root, sequence-root, no-bases, tesseract, web, bases
+campaign | stage | all | 1.00 | fleet, frontier, scribe, lanes, manifest, pace, bell, popper, agora
+commit | stage | all | 1.00 | gate, artefact, released, strands, no-prose, self-report
 hgnc:3236 | page | all | 1.00 | epidermal growth factor receptor
 ensembl:ENSG00000146648 | page | all | 1.00 | egfr
 ensembl:ENST00000275493 | page | all | 1.00 | egfr-201
@@ -151,6 +153,34 @@ Load docs/organize-stack.md.
 ::end
 ::end
 
+::node [id=campaign type=stage confidence=1.00 scope=all updated=2026-11-28]
+::dense
+fleet=bell-mission|frontier=function+compartment+exemplar-pmid|scribe=editor-key-never-role|pace=sealed-template-claims(refutes x2)|run-state=~/campaigns
+::end
+::full
+Load campaigns/pace-frontier.md.
+::end
+::edges
+->[:requires] campaigns/pace-frontier.md
+->[:requires] contract
+->[:precedes] commit
+::end
+::end
+
+::node [id=commit type=stage confidence=1.00 scope=all updated=2026-11-28]
+::dense
+gate=needed+predicted+corroborated+pinnable|released-only|template=cites,supports,refutes,chain-rows|scratch=plan,glyph|trace-is-never-a-pin
+::end
+::full
+Load campaigns/commit-artefact.md.
+::end
+::edges
+->[:requires] campaigns/commit-artefact.md
+->[:requires] pins
+->[:precedes] transcribe
+::end
+::end
+
 ::node [id=hgnc:3236 type=page confidence=1.00 scope=all updated=2026-11-23]
 ::dense
 root:63d056ca76aeb4d1fa2f20d9d9beb9993b9977f2ddbbfeacb74e8b8e74656793|claims:3
@@ -220,5 +250,7 @@ on-fail: ->[:requires] contract
 2026-11-26|added|dna: printed (loop1 receipt per print) and scratch glyph (cgr1)|WET-139
 2026-11-26|added|stack map: helix over the DNA primitive; sequence-root is a chain root|WET-139
 2026-11-26|added|dna: scratch plan (tess1 plan root, machine, parts); binds by subject, sequence-root is salted|WET-139
+2026-11-28|added|campaigns/: a fleet over one frontier, its manifest and the pace metric|WET-138
+2026-11-28|added|artefact gate: released only, existing predicates, a trace is never a pin|WET-138
 ::end
 ::end

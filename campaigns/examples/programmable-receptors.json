@@ -1,0 +1,49 @@
+{
+  "campaign": 1,
+  "id": "programmable-receptors",
+  "steward": "mc",
+  "frontier": {
+    "function": "sensory",
+    "compartment": "membrane",
+    "exemplar": "pmid:39633047"
+  },
+  "scribe": "REPLACE_WITH_SCRIBE_ED25519_PUBLIC_KEY",
+  "endpoint": "https://helix.example",
+  "maxChars": 400,
+  "lanes": [
+    {
+      "name": "sense",
+      "case": "case-syngpcr-1",
+      "disciplines": [
+        "protein-engineering",
+        "cell-biology"
+      ],
+      "turns": 40,
+      "sandboxSeconds": 600
+    },
+    {
+      "name": "refute",
+      "case": "case-syngpcr-2",
+      "disciplines": [
+        "cell-biology",
+        "statistics"
+      ],
+      "turns": 40,
+      "sandboxSeconds": 600
+    }
+  ],
+  "gate": {
+    "deltaMin": 0.5,
+    "replicates": 3,
+    "read": "fulltext-claim-checked",
+    "refutations": "counted"
+  },
+  "pins": {
+    "wetware-hq/bell": "2543b9dee1e387f459cae849307fc4aae910a38a",
+    "wetware-hq/popper": "32c0a9ff49b71031a9dd1a991e349d18b5689b1c",
+    "wetware-hq/agora": "f3c87977b5065fe1c7b909ee0537e10b655dd7cc",
+    "wetware-hq/web": "5588dfa59e4bf74319080bb551162bfd4649c810",
+    "wetware-hq/tesseract": "94616c82cdc5889429f16ffa3677dd6a02e65b04",
+    "wetware-hq/bases": "1ee66647faac5e04000c4676e77c9dd2bd21a8b1"
+  }
+}

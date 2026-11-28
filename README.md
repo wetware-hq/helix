@@ -73,6 +73,14 @@ A synthetic chromosome is the first-class asset of the chain. Each one is a `Bas
 - Its page shows the hash, length, holder and print count, each read from the chain at a fixed block.
 - helix only reads tokens. Minting, printing and transferring happen in `bases`; editing a page still moves no money.
 
+## Campaigns
+
+A **campaign** is a standing fleet that works one frontier of synthetic biology — a biological function in a compartment, anchored to one published exemplar — and leaves its checkable residue here. The fleet itself is a [`bell`](https://github.com/wetware-hq/bell) Mission, its nights are [`popper`](https://github.com/wetware-hq/popper) loops and its lanes talk on an [`agora`](https://github.com/wetware-hq/agora) board; helix is only the place the sealed claims land.
+
+A campaign gets no privilege here. It edits through one editor key (its *scribe*), which is never a verifier or sealer key, and its memos, traces and board casts never become claims — a campaign generates far more text than helix will hold, and none of it is evidence. A campaign is judged by its **pace**: the template claims it sealed this turn at `fulltext-claim-checked` or above, counting refutations twice.
+
+[`campaigns/pace-frontier.md`](campaigns/pace-frontier.md) defines the campaign, its stages and its manifest; [`campaigns/commit-artefact.md`](campaigns/commit-artefact.md) defines the gate an artefact passes and the claims it becomes. Both are specifications: there is no runner, and a run keeps its working files outside the repository, under `~/campaigns/<id>/`.
+
 ## How facts get trusted
 
 Each template fact carries a **pin**: the source URL, the exact field, the source release, and a hash of the value. When someone proposes the fact, a checker fetches the source again and confirms the value matches.
@@ -112,6 +120,8 @@ The editor, verifier and sealer must be three different keys, so nobody can appr
 | [`docs/follow-agent-contract.md`](docs/follow-agent-contract.md) | The rulebook. It wins over every other file if they disagree. |
 | [`docs/pin-references.md`](docs/pin-references.md) | Which sources count as evidence, and how far each can be trusted. |
 | [`docs/organize-stack.md`](docs/organize-stack.md) | Where helix sits in the wetware stack, and what each lower layer contributes to a `dna:` page. |
+| [`campaigns/pace-frontier.md`](campaigns/pace-frontier.md) | A campaign: a standing fleet working one frontier, and how its pace is counted. |
+| [`campaigns/commit-artefact.md`](campaigns/commit-artefact.md) | When a fleet's artefact may be written here, and which claims it becomes. |
 | [`skills/resolve-locus.md`](skills/resolve-locus.md) | Turning a name like "EGFR" into an exact page ID. |
 | [`skills/transcribe-page.md`](skills/transcribe-page.md) | Building and signing an edit. |
 | [`skills/verify-claim.md`](skills/verify-claim.md) | Checking an edit against its sources. |
