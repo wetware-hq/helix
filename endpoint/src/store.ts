@@ -19,10 +19,13 @@ export type SettleInput = {
   key: string;
   rnaDigest: string;
   append: Claim[];
+  /** The sealer's receipt and signed SettleResponse, stored with the append in one put. */
+  receipt: Receipt;
+  response: Record<string, unknown>;
 };
 
 export type SettleOutcome =
-  | { state: "sealed" | "receipt"; receipt: Receipt }
+  | { state: "sealed" | "receipt"; receipt: Receipt; response?: Record<string, unknown> }
   | { state: "fail"; code: string };
 
 export type Env = { STORE: DurableObjectNamespace<Store>; HELIX_SEED?: string };
@@ -105,12 +108,6 @@ export class Store extends DurableObject {
     return (await this.ctx.storage.get("receipt:" + editor + ":" + key)) ?? null;
   }
 
-  async putResponse(editor: string, key: string, rna: string, response: Record<string, unknown>): Promise<void> {
-    const k = "receipt:" + editor + ":" + key;
-    const row = await this.ctx.storage.get<{ rna: string; receipt: Receipt }>(k);
-    if (row && row.rna === rna) await this.ctx.storage.put(k, { ...row, response });
-  }
-
   /**
    * systems/seal-page.md: the whole settle runs here, so the receipt lookup, nonce,
    * parent and duplicate checks and the append cannot interleave with another edit.
@@ -119,9 +116,15 @@ export class Store extends DurableObject {
   async settle(input: SettleInput): Promise<SettleOutcome> {
     await this.init();
     const receiptKey = "receipt:" + input.editor + ":" + input.key;
-    const stored = await this.ctx.storage.get<{ rna: string; receipt: Receipt }>(receiptKey);
+    const stored = await this.ctx.storage.get<{
+      rna: string;
+      receipt: Receipt;
+      response?: Record<string, unknown>;
+    }>(receiptKey);
     if (stored) {
-      if (stored.rna === input.rnaDigest) return { state: "receipt", receipt: stored.receipt };
+      if (stored.rna === input.rnaDigest) {
+        return { state: "receipt", receipt: stored.receipt, response: stored.response };
+      }
       return { state: "fail", code: "replay" };
     }
     if (await this.ctx.storage.get("spent:" + input.nonce)) return { state: "fail", code: "expired" };
@@ -141,15 +144,13 @@ export class Store extends DurableObject {
     for (const c of input.append) root = await foldRoot(root, c);
     const next: Locus = { claims: [...locus.claims, ...input.append], root };
 
-    const receipt: Receipt = {
-      rna: input.rnaDigest,
-      id: input.id,
-      root,
-      editor: input.editor,
-      verifier: input.verifier,
-      sealer: input.sealer,
-      at: new Date().toISOString(),
-    };
+    const receipt = input.receipt;
+    if (
+      receipt.root !== root || receipt.rna !== input.rnaDigest || receipt.id !== input.id ||
+      receipt.editor !== input.editor || receipt.verifier !== input.verifier || receipt.sealer !== input.sealer
+    ) {
+      return { state: "fail", code: "bad_envelope" };
+    }
 
     const ids = (await this.ctx.storage.get<string[]>("ids")) ?? [];
     if (!ids.includes(input.id)) ids.push(input.id);
@@ -158,11 +159,11 @@ export class Store extends DurableObject {
       ["locus:" + input.id]: next,
       ids,
       updated: receipt.at.slice(0, 10),
-      [receiptKey]: { rna: input.rnaDigest, receipt },
+      [receiptKey]: { rna: input.rnaDigest, receipt, response: input.response },
       ["spent:" + input.nonce]: input.expires,
     });
     await this.ctx.storage.delete("offer:" + input.nonce);
-    return { state: "sealed", receipt };
+    return { state: "sealed", receipt, response: input.response };
   }
 }
 

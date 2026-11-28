@@ -2,8 +2,8 @@
 // Every state check that can change after /verify is repeated inside the store's lock.
 import { importSecret, signObject, verifyRaw } from "./lib/crypto";
 import { digest } from "./lib/crypto";
-import { rnaShapeOk, type Receipt } from "./lib/model";
-import { store, type Store } from "./store";
+import { foldRoot, rnaShapeOk, type Receipt } from "./lib/model";
+import { store, type SettleOutcome, type Store } from "./store";
 import {
   NETWORK, helixSignatureOk, offerDigest, rnaDigest,
   type Offer, type PaymentPayload, type SettleResponse, type VerifyResponse,
@@ -84,7 +84,21 @@ export default {
       (await verifyRaw(info.endpoint, offerSig, await digest(offerBody as unknown as Json)));
     if (!offerOk || Date.parse(rna.expires) < Date.now()) return json(fail("expired", editor));
 
-    const outcome = await db.settle({
+    // The root is computable from parent and append alone (contract §3), so the receipt is
+    // signed before the store call and written in the same put as the append.
+    let root = rna.parent;
+    for (const c of rna.append) root = await foldRoot(root, c);
+    const receipt: Receipt = {
+      rna: d,
+      id: rna.id,
+      root,
+      editor,
+      verifier: vr.verifier,
+      sealer: env.HELIX_KEY,
+      at: new Date().toISOString(),
+    };
+    const response = await settled(receipt, env);
+    const outcome = (await db.settle({
       id: rna.id,
       editor,
       verifier: vr.verifier,
@@ -95,12 +109,14 @@ export default {
       key: rna.key,
       rnaDigest: d,
       append: rna.append,
-    });
+      receipt,
+      response: response as unknown as Record<string, unknown>,
+    })) as unknown as SettleOutcome;
     if (outcome.state === "fail") return json(fail(outcome.code, editor));
-
-    const response = await settled(outcome.receipt, env);
-    await db.putResponse(editor, rna.key, d, response as unknown as Record<string, unknown>);
-    return json(response);
+    if (outcome.state === "receipt") {
+      return json((outcome.response as unknown as Json) ?? (await settled(outcome.receipt, env)));
+    }
+    return json(response as unknown as Json);
   },
 };
 
