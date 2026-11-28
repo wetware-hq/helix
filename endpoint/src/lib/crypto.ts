@@ -51,6 +51,8 @@ export async function verifyRaw(key: string, sig: string, message: Uint8Array): 
     return false;
   }
   if (pub.length !== 32 || s.length !== 64) return false;
+  // One key has one spelling: refuse aliases that differ only in unused trailing bits.
+  if (b64url(pub) !== key || b64url(s) !== sig) return false;
   try {
     const k = await crypto.subtle.importKey("raw", pub as BufferSource, { name: "Ed25519" }, false, ["verify"]);
     return crypto.subtle.verify("Ed25519", k, s as BufferSource, message as BufferSource);
@@ -66,7 +68,8 @@ export async function verifyObject(key: string, sig: string, x: Json): Promise<b
 export function isKey(s: unknown): s is string {
   if (typeof s !== "string" || !/^[-_A-Za-z0-9]{43}$/.test(s)) return false;
   try {
-    return unb64url(s).length === 32;
+    const bytes = unb64url(s);
+    return bytes.length === 32 && b64url(bytes) === s;
   } catch {
     return false;
   }

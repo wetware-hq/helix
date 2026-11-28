@@ -133,3 +133,12 @@ describe("index", () => {
     expect(og).toContain("->[:same-as] ensembl:ENSG00000146648");
   });
 });
+
+import { isKey } from "../src/lib/crypto";
+describe("keys", () => {
+  it("accepts one spelling per Ed25519 key", () => {
+    const key = "rqtfDp9sW2dLoSo0OVxwttCPr7isVreCpr5BUbS4NKg";
+    expect(isKey(key)).toBe(true);
+    expect(isKey(key.slice(0, 42) + "h")).toBe(false);
+  });
+});
