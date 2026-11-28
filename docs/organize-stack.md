@@ -30,8 +30,7 @@ wetware-hq
   tesseract   .tess   build plan          -> plan root           (scratch, via the dna: page subject)
   web         .dna    sequence, primitive -> sequence root       (never reaches helix)
               pool1   arr<oligo>          -> reads of a print
-              cgr1    glyph               -> counts root         glyph claim (scratch)
-              loop1   read-back loop      -> head                printed receipt
+              loop1   read-back loop      -> head, view1 frames  printed receipt; view claim (scratch)
               .web    shallow network     -> web root            (not a dna: value)
   bases       token   chromosome, ERC-721 -> token id, root, length, prints, head
   helix       page    dna:<token id>      -> locus root          (this repository)
@@ -44,14 +43,14 @@ wetware-hq
 | `bases` | length in bases | `length`, fixed at mint |
 | `bases` | holder, print count | `held-by`, `prints` |
 | `bases` + `web` loop1 | `Polymerized` receipt = loop head | `printed` |
-| `web` cgr1 | counts root and glyph | `glyph` (scratch) |
+| `web` loop1 | a `view1` frame of the expected read-back | `view` (scratch) |
 | `tesseract` | plan root, over a target sequence root | scratch `plan` claim on the page subject (owned by the tesseract change) |
 
 ## Rules
 
 - **No bases.** A page holds roots, counts, lengths and receipts. A claim whose value holds a base is refused like any free text (contract §1).
 - **`sequence-root` is a chain root.** It is the salted Bases `root`, not web's unsalted sequence root `sha256(ascii(seq))`. The two never compare equal. A tesseract target, a loop header and a pool file name the unsalted sequence root; they reach a page by its token id, and only someone holding the salt can show they name the page's sequence.
-- **One name per value.** A web root, a sequence root, a chain root, a counts root, a loop head, a plan root and a locus root are different objects. A claim of one predicate never holds another's value.
+- **One name per value.** A web root, a sequence root, a chain root, a loop head, a plan root and a locus root are different objects. A claim of one predicate never holds another's value.
 - **Pin, never vendor.** web, bases and tesseract are cited by repository and commit (`docs/pin-references.md`); none of their files are copied here.
 
 ## Falsification
