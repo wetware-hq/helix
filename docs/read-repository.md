@@ -36,6 +36,8 @@ Read `DISCLAIMER` before any node. Then take the first row that covers the task 
 | Propose how a chromosome would be built | `wetware-hq/tesseract`; its scratch `plan` claim: contract §3 |
 | Mint, print (polymerize) or transfer a chromosome | `wetware-hq/bases`; its `dna:` page: `docs/pin-references.md` §Chain rows |
 | Run the endpoint | `systems/serve-endpoint.md` |
+| Run a campaign, or declare one over a frontier | `campaigns/pace-frontier.md` |
+| Commit a fleet's released artefact, or gate one | `campaigns/commit-artefact.md` |
 | Place helix in the wetware stack, or name a value from web, bases or tesseract | `docs/organize-stack.md` |
 | Traverse without reading prose | `ooc/helix.og` |
 | Anything else, or a conflict | `docs/follow-agent-contract.md` |
@@ -54,6 +56,9 @@ flowchart LR
     V --> S[seal-page]
     S --> E[serve-endpoint]
     C --> E
+    C --> M[campaigns/pace-frontier]
+    M --> A[campaigns/commit-artefact]
+    A --> P
 ```
 
 ## Licence

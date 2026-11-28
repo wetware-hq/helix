@@ -22,6 +22,7 @@ A pin says where a claim can be re-read, what value was read there, and how far 
 
 - ← [follow-agent-contract.md](follow-agent-contract.md)
 - ← [organize-stack.md](organize-stack.md)
+- ← [../campaigns/commit-artefact.md](../campaigns/commit-artefact.md)
 - → [../skills/verify-claim.md](../skills/verify-claim.md)
 
 ## Pin

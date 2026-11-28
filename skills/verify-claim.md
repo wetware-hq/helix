@@ -22,6 +22,7 @@ Check one signed RNA edit against the genome and its sources. Return a signed `V
 
 - ← [transcribe-page.md](transcribe-page.md)
 - ← [../docs/pin-references.md](../docs/pin-references.md)
+- ← [../campaigns/commit-artefact.md](../campaigns/commit-artefact.md)
 - → [../systems/seal-page.md](../systems/seal-page.md)
 
 ## Indications

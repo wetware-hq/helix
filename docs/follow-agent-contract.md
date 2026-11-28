@@ -25,6 +25,7 @@ helix stores biotechnology knowledge the way a cell stores genes. Claims are kep
 - → [../skills/resolve-locus.md](../skills/resolve-locus.md)
 - → [../systems/serve-endpoint.md](../systems/serve-endpoint.md)
 - → [organize-stack.md](organize-stack.md)
+- → [../campaigns/pace-frontier.md](../campaigns/pace-frontier.md)
 
 ## Composition
 
