@@ -43,9 +43,9 @@ function rpcResult(id: Id, result: unknown): Response {
   return Response.json({ jsonrpc: "2.0", id, result });
 }
 
-/** Versions this binding serves: an empty header or any 1.x. */
+/** This binding serves A2A 1.0 only; an empty version means 0.3, which it does not serve. */
 export function versionOk(v: string | null): boolean {
-  return v === null || v === "" || /^1(\.\d+)*$/.test(v.trim());
+  return v !== null && v.trim() === A2A_VERSION;
 }
 
 export type HelixAsk = { skill: "read" | "edit"; id: string; accept?: "json"; payment?: string };

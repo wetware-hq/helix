@@ -52,7 +52,8 @@ describe("A2A JSON-RPC binding", () => {
 
   it("refuses an unsupported A2A-Version", async () => {
     expect(versionOk("1.0")).toBe(true);
-    expect(versionOk(null)).toBe(true);
+    expect(versionOk(null)).toBe(false);
+    expect(versionOk("1.1")).toBe(false);
     expect(versionOk("0.3")).toBe(false);
     const res = await a2a(rpc("SendMessage", {}, { "A2A-Version": "0.3" }), "x", dispatch);
     expect(((await res.json()) as any).error.code).toBe(-32009);
