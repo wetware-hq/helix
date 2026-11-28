@@ -6,7 +6,7 @@
   "observability": { "enabled": true },
   "workers_dev": false,
   "preview_urls": false,
-  "routes": [{ "pattern": "getwetware.xyz/settle", "zone_name": "getwetware.xyz" }],
+  "routes": [{ "pattern": "getwetware.xyz/settle*", "zone_name": "getwetware.xyz" }],
   "vars": { "HELIX_KEY": "fAabsOwPzE37fz8pYqTY-WRyGzHZt8P3HfbUcDD1Mlk" },
   "durable_objects": { "bindings": [{ "name": "STORE", "class_name": "Store" }] },
   "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Store"] }]

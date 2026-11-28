@@ -8,9 +8,9 @@
   "preview_urls": false,
   "routes": [
     { "pattern": "getwetware.xyz/wiki/*", "zone_name": "getwetware.xyz" },
-    { "pattern": "getwetware.xyz/index", "zone_name": "getwetware.xyz" },
-    { "pattern": "getwetware.xyz/.well-known/agent-card.json", "zone_name": "getwetware.xyz" },
-    { "pattern": "getwetware.xyz/a2a", "zone_name": "getwetware.xyz" }
+    { "pattern": "getwetware.xyz/index*", "zone_name": "getwetware.xyz" },
+    { "pattern": "getwetware.xyz/.well-known/agent-card.json*", "zone_name": "getwetware.xyz" },
+    { "pattern": "getwetware.xyz/a2a*", "zone_name": "getwetware.xyz" }
   ],
   "vars": { "HELIX_KEY": "rqtfDp9sW2dLoSo0OVxwttCPr7isVreCpr5BUbS4NKg" },
   "services": [

@@ -6,7 +6,7 @@
   "observability": { "enabled": true },
   "workers_dev": false,
   "preview_urls": false,
-  "routes": [{ "pattern": "getwetware.xyz/verify", "zone_name": "getwetware.xyz" }],
+  "routes": [{ "pattern": "getwetware.xyz/verify*", "zone_name": "getwetware.xyz" }],
   "vars": { "HELIX_KEY": "V4TamcyoAkL2jLqgvvQu0J5SfZnpCFkag-aUV6q5KS4" },
   "durable_objects": {
     "bindings": [{ "name": "STORE", "class_name": "Store", "script_name": "helix-sealer" }]
