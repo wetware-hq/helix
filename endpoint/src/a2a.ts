@@ -154,6 +154,7 @@ export async function a2a(request: Request, origin: string, dispatch: Dispatch):
   const message = rpc.params?.message as Message | undefined;
   const ask = askOf(message);
   if (!message || !ask) return rpcError(id, "params", "need_helix_request");
+  if (typeof message.taskId === "string" && message.taskId !== "") return rpcError(id, "task", "no_tasks");
 
   const url = `${origin}/wiki/${ask.id}`;
   const headers: Record<string, string> = {};

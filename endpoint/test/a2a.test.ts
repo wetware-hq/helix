@@ -50,6 +50,14 @@ describe("A2A JSON-RPC binding", () => {
     expect(((await bad.json()) as any).error.code).toBe(-32602);
   });
 
+  it("refuses a message bound to a task, without dispatching", async () => {
+    const before = seen.length;
+    const msg = { messageId: "m3", role: "ROLE_USER", taskId: "t1", parts: [{ data: { skill: "edit", id: "pdb:1M17" } }] };
+    const res = await a2a(rpc("SendMessage", { message: msg }), "x", dispatch);
+    expect(((await res.json()) as any).error.code).toBe(-32001);
+    expect(seen.length).toBe(before);
+  });
+
   it("refuses an unsupported A2A-Version", async () => {
     expect(versionOk("1.0")).toBe(true);
     expect(versionOk(null)).toBe(false);
