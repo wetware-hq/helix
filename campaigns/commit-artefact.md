@@ -32,10 +32,12 @@ An artefact reaches `transcribe` only if all four hold, in this order. The first
 |---|---|---|---|
 | 1 | **Needed.** The artefact cites an open `Need` of the campaign, on the declared frontier. | `bell` systems gate | `unneeded`, `off_frontier` |
 | 2 | **Predicted.** A prediction was stated before the run, and the decision rule was proved. | `popper` Conjecturer, Prover | `ungated` |
-| 3 | **Corroborated.** Every candidate replicate beat every baseline replicate by `gate.deltaMin`, or it cost strictly less without being worse on average. | `popper` Critic, `bell` `develop` | the artefact is `Refuted` or `Inconclusive` |
-| 4 | **Pinnable.** Every claim the artefact would make has a pin from the pin table, and a value that binds. | `docs/pin-references.md` | `unpinned`, `bad_source`, `evidence_mismatch` |
+| 3 | **Corroborated.** Every candidate replicate beat every baseline replicate by `gate.deltaMin`, or it cost strictly less without being worse on average. | `popper` Critic, `bell` `develop` | the artefact is `Refuted` or `Inconclusive`, and only the refutation path below may be transcribed |
+| 4 | **Pinnable.** Every *template* claim the artefact would make has a pin from the pin table and a value that binds. A `plan` or `glyph` claim is scratch, so it carries no pin (contract §2) and this gate passes it unexamined. | `docs/pin-references.md` | `unpinned`, `bad_source`, `evidence_mismatch` |
 
 A crash is inconclusive, never a pass. Gates 1–3 happen in the fleet; gate 4 is checked by building the RNA and reading it back, before anything is posted.
+
+Gate 3 governs the artefact *as a tool*: an artefact that failed it is never said here as a fact. It does not close the **refutation path**. When a `Refuted` verdict is about a claim already sealed here, and a paper states the refutation, the campaign may transcribe that one `refutes` claim under gates 1, 2 and 4, with the paper as its pin. An `Inconclusive` verdict says nothing about any claim and opens no path.
 
 ## What an artefact becomes
 
@@ -45,7 +47,7 @@ A released artefact is not one claim. It is split by strand, because a campaign'
 |---|---|---|---|
 | the exemplar paper | `cites` → `pmid:` | template | paper row, reader attestation, retraction gate |
 | a finding the paper states about the subject | `supports` → `cid` of the claim it backs | template | paper row, reader attestation |
-| a claim the night refuted | `refutes` → `cid` of the target | template | the paper or record that shows it, never the trace |
+| a claim the night refuted | `refutes` → `cid` of the target | template | paper row, reader attestation (contract §3); never the trace, and never a database record |
 | the construct, once it is a token | a `dna:` page: `label`, `sequence-root`, `length`, `held-by`, `prints` | template | chain rows at a finalized block |
 | each print of it | `printed` | template | the `Polymerized` log at its block |
 | how the lane would build it | `plan` (`tess1` root, machine, parts) | scratch | none |
@@ -73,7 +75,7 @@ The last row is the important one. A campaign generates far more text than helix
 
 - A `popper` verdict is a reason to make a claim, never the pin for one. A trace is the campaign's own file; a pin must be re-readable at an authority listed in `docs/pin-references.md` (`C7`).
 - A plan is a proposal, so it stays scratch until a print reads the sequence back (contract §0). A campaign cannot promote its own plan: a `printed` claim comes from the chain, and the read-back loop decides whether the print agrees with the plan.
-- A refuted artefact is still worth transcribing when a source shows the refutation, because a counted `refutes` claim at `fulltext-claim-checked` or above makes its target render as refuted (contract §4), and that is half the pace metric.
+- A refuted artefact is still worth transcribing when a paper states the refutation (the refutation path above), because a counted `refutes` claim at `fulltext-claim-checked` or above makes its target render as refuted (contract §4), and that is half the pace metric. A record that merely disagrees is not a refutation here: `supports` and `refutes` take a paper pin, so a contradicting authority value is a new template claim of its own predicate, which the page renders as the current one.
 
 ## Indications
 
