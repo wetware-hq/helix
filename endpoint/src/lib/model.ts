@@ -99,19 +99,15 @@ export const PREDICATES: Record<string, Rule> = {
   label: { kind: "lit", strand: "template" },
   "located-at": { kind: "lit", lit: /^[0-9XY]{1,2}[pq][0-9.]+$/ },
   length: { kind: "lit", lit: /^[1-9][0-9]*$/ },
-  "held-by": { kind: "lit", strand: "template", dnaOnly: true, lit: /^eip155:[0-9]{1,32}:0x[0-9a-f]{40}$/ },
   "sequence-root": { kind: "lit", strand: "template", dnaOnly: true, lit: HEX64 },
-  prints: { kind: "lit", strand: "template", dnaOnly: true, lit: /^(0|[1-9][0-9]*)$/ },
   printed: { kind: "lit", strand: "template", dnaOnly: true, lit: /^[1-9][0-9]*:[0-9a-f]{64}$/ },
   plan: {
     kind: "lit", strand: "scratch", dnaOnly: true,
     lit: /^tess1:[0-9a-f]{64} [a-z0-9][a-z0-9-]{1,30} [1-9][0-9]{0,5}$/,
   },
-  view: { kind: "lit", strand: "scratch", dnaOnly: true },
   "same-as": { kind: "id" },
   "transcribed-to": { kind: "id" },
   "translated-to": { kind: "id" },
-  encodes: { kind: "id" },
   "part-of": { kind: "id" },
   binds: { kind: "id" },
   cites: { kind: "id", idNamespace: "pmid" },
@@ -120,7 +116,6 @@ export const PREDICATES: Record<string, Rule> = {
 };
 
 const LABEL_LIT = /^[^`<>\[\]|\n]{1,300}$/;
-const VIEW = /^size=([1-8]) ([ .:=+*#%@-]{1,8}(?:\/[ .:=+*#%@-]{1,8}){0,7})$/;
 
 export function labelLitOk(lit: string): boolean {
   // 1-300 printable characters, none of ` < > [ ] | or a newline.
@@ -129,14 +124,6 @@ export function labelLitOk(lit: string): boolean {
     const c = ch.codePointAt(0)!;
     return c < 0x20 || c === 0x7f;
   });
-}
-
-export function viewOk(lit: string): boolean {
-  const m = VIEW.exec(lit);
-  if (!m) return false;
-  const side = Number(m[1]);
-  const rows = m[2].split("/");
-  return rows.length === side && rows.every((r) => [...r].length === side);
 }
 
 function isObject(v: unknown): v is Record<string, unknown> {
@@ -206,7 +193,6 @@ export function predicateError(c: Claim): Code | null {
   if (!("lit" in c.object)) return "bad_predicate";
   const lit = c.object.lit;
   if (c.predicate === "label") return labelLitOk(lit) ? null : "bad_predicate";
-  if (c.predicate === "view") return viewOk(lit) ? null : "bad_predicate";
   if (rule.lit && !rule.lit.test(lit)) return "bad_predicate";
   return null;
 }

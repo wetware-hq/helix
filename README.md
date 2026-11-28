@@ -70,7 +70,7 @@ A synthetic chromosome is the first-class asset of the chain. Each one is a `Bas
 - The token stores only a hash of the chromosome and its length in bases, never the sequence.
 - A sequence is fixed once committed: its hash and length never change. Nothing is burned or rewritten.
 - Polymerizable means printable: the chromosome is a real-world asset, and each print of it is recorded on the token (polymerize).
-- Its page shows the hash, length, holder and print count, each read from the chain at a fixed block.
+- Its page shows the committed root, length and each printed receipt. A reader queries mutable token state directly from the chain.
 - helix only reads tokens. Minting, printing and transferring happen in `bases`; editing a page still moves no money.
 
 ## Campaigns

@@ -62,19 +62,22 @@ describe("claim validation", () => {
     );
   });
 
-  it("checks the view1 grid", () => {
-    const base: Claim = {
-      subject: "dna:" + "a".repeat(32),
-      predicate: "view",
-      object: { lit: "size=2 ab/cd" },
-      strand: "scratch",
-      pin: null,
-      read: "unread",
-    };
-    expect(predicateError({ ...base, object: { lit: "size=2 .:/=+" } })).toBe(null);
-    expect(predicateError({ ...base, object: { lit: "size=1 #" } })).toBe(null);
-    expect(predicateError({ ...base, object: { lit: "size=2 .:/=+/##" } })).toBe("bad_predicate");
-    expect(predicateError({ ...base, object: { lit: "k=1 .:/=+" } })).toBe("bad_predicate");
+  it("rejects the removed predicates", () => {
+    const subject = "dna:" + "a".repeat(32);
+    const claims: Claim[] = [
+      { subject, predicate: "view", object: { lit: "size=1 #" }, strand: "scratch", pin: null, read: "unread" },
+      {
+        subject,
+        predicate: "held-by",
+        object: { lit: "eip155:1:0x" + "a".repeat(40) },
+        strand: "template",
+        pin: null,
+        read: "unread",
+      },
+      { subject, predicate: "prints", object: { lit: "1" }, strand: "template", pin: null, read: "unread" },
+      { subject, predicate: "encodes", object: { id: "uniprot:P00533" }, strand: "template", pin: null, read: "unread" },
+    ];
+    for (const c of claims) expect(predicateError(c)).toBe("bad_predicate");
   });
 
   it("refuses a label literal holding markdown", () => {

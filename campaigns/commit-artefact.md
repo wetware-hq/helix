@@ -33,7 +33,7 @@ An artefact reaches `transcribe` only if all four hold, in this order. The first
 | 1 | **Needed.** The artefact cites an open `Need` of the campaign, on the declared frontier. | `bell` systems gate | `unneeded`, `off_frontier` |
 | 2 | **Predicted.** A prediction was stated before the run, and the decision rule was proved. | `popper` Conjecturer, Prover | `ungated` |
 | 3 | **Corroborated.** Every candidate replicate beat every baseline replicate by `gate.deltaMin`, or it cost strictly less without being worse on average. | `popper` Critic, `bell` `develop` | the artefact is `Refuted` or `Inconclusive`, and only the refutation path below may be transcribed |
-| 4 | **Pinnable.** Every *template* claim the artefact would make has a pin from the pin table and a value that binds. A `plan` or `view` claim is scratch, so it carries no pin (contract §2) and this gate passes it unexamined. | `docs/pin-references.md` | `unpinned`, `bad_source`, `evidence_mismatch` |
+| 4 | **Pinnable.** Every *template* claim the artefact would make has a pin from the pin table and a value that binds. A `plan` claim is scratch, so it carries no pin (contract §2) and this gate passes it unexamined. | `docs/pin-references.md` | `unpinned`, `bad_source`, `evidence_mismatch` |
 
 A crash is inconclusive, never a pass. Gates 1–3 happen in the fleet; gate 4 is checked by building the RNA and reading it back, before anything is posted.
 
@@ -48,10 +48,9 @@ A released artefact is not one claim. It is split by strand, because a campaign'
 | the exemplar paper | `cites` → `pmid:` | template | paper row, reader attestation, retraction gate |
 | a finding the paper states about the subject | `supports` → `cid` of the claim it backs | template | paper row, reader attestation |
 | a claim the night refuted | `refutes` → `cid` of the target | template | paper row, reader attestation (contract §3); never the trace, and never a database record |
-| the construct, once it is a token | a `dna:` page: `label`, `sequence-root`, `length`, `held-by`, `prints` | template | chain rows at a finalized block |
+| the construct, once it is a token | a `dna:` page: `label`, `sequence-root`, `length` | template | chain rows at a finalized block |
 | each print of it | `printed` | template | the `Polymerized` log at its block |
 | how the lane would build it | `plan` (`tess1` root, machine, parts) | scratch | none |
-| the read-back picture it expects | `view` (`view1`) | scratch | none |
 | the problem, the memo, the conjecture, the trace, the board cast | nothing | — | — |
 
 The last row is the important one. A campaign generates far more text than helix can hold, and none of it is a claim: a `lit` object is either an authority value or a fixed grammar (contract §1), so a distilled problem statement has nowhere to go. Putting one in a claim is `prose_leak` in the fleet and `bad_predicate` or `reverse_flow` at the endpoint.

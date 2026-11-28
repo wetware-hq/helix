@@ -7,7 +7,7 @@ import {
   CHECKED, core, namespaceOf, readRank, splitId, type Claim, type Code, type Roles,
 } from "./model";
 
-export const PAPER_PREDICATES = ["cites", "supports", "refutes", "binds", "encodes", "part-of"];
+export const PAPER_PREDICATES = ["cites", "supports", "refutes", "binds", "part-of"];
 
 const EUROPEPMC = (pmid: string) =>
   "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:" +

@@ -5,19 +5,19 @@ updated: 2026-11-28
 domain: helix|wiki|central-dogma|campaign
 scope: all
 governs: docs/follow-agent-contract.md
-checksum: sha256:6c7e54b9c010c634aa981857333cfb17074b24ae502a59e847fb3a4ed1376986
+checksum: sha256:90a9601be90cb49c8351b136ed0eaa66b2bf7ead4c9a623fbcdc200186303637
 ::end
 
 ::schema
 node-types: [stage, page, assertion, meta]
-edge-types: [requires, precedes, same-as, transcribed-to, translated-to, encodes, part-of, binds, cites, hypothesis]
+edge-types: [requires, precedes, same-as, transcribed-to, translated-to, part-of, binds, cites, hypothesis]
 scope-levels: [all, reader, editor, verifier, sealer]
 ::end
 
 ::index
 # id | type | scope | conf | keywords
 banner | meta | all | 1.00 | academic, research, oversight, banner
-contract | stage | all | 1.00 | ids, dna-rna-protein, dna-chromosome, printed, plan, view, strands, algebra, flow-laws, codes, predicates
+contract | stage | all | 1.00 | ids, dna-rna-protein, dna-chromosome, printed, plan, strands, algebra, flow-laws, codes, predicates
 pins | stage | all | 1.00 | pin, chain-row, ceiling, retraction-gate, no-tertiary
 resolve | stage | all | 1.00 | name, accession, exact, unresolved, unavailable
 transcribe | stage | all | 1.00 | 402, echo, append-only, idempotency-key
@@ -169,7 +169,7 @@ Load campaigns/pace-frontier.md.
 
 ::node [id=commit type=stage confidence=1.00 scope=all updated=2026-11-28]
 ::dense
-gate=needed+predicted+corroborated+pinnable|released-only|template=cites,supports,refutes,chain-rows|scratch=plan,view|trace-is-never-a-pin
+gate=needed+predicted+corroborated+pinnable|released-only|template=cites,supports,refutes,chain-rows|scratch=plan|trace-is-never-a-pin
 ::end
 ::full
 Load campaigns/commit-artefact.md.
@@ -254,5 +254,6 @@ on-fail: ->[:requires] contract
 2026-11-28|added|artefact gate: released only, existing predicates, a trace is never a pin|WET-138
 2026-11-28|added|live endpoint at getwetware.xyz (endpoint/), role keys in genome.json|WET-125
 2026-11-28|changed|dna: scratch glyph (cgr1) replaced by scratch view (view1); web excised cgr1|WET-139
+2026-11-28|removed|predicates encodes, held-by, prints, view: derivable or duplicated|WET-139
 ::end
 ::end
