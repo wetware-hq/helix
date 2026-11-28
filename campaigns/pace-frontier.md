@@ -50,7 +50,7 @@ Pmid         = ^pmid:[1-9][0-9]*$
 
 The exemplar is one published construct that already does the function in that compartment: a programmable receptor at the membrane, a molecular recorder in the nucleus, a typable transporter through the Golgi. It is a `pmid:` page here, so the first act of a campaign is to create or read that page, and the frontier is thereby checkable: a campaign whose exemplar is unresolvable at its authority is refused with `off_frontier` before any lane starts.
 
-A preprint reached by DOI is resolved to its `pmid:` through `skills/resolve-locus.md`; a preprint with no PMID cannot be an exemplar, because helix has no `doi:` namespace (contract §0).
+A preprint reached by DOI is resolved to its `pmid:` through `skills/resolve-locus.md`: Europe PMC answers a preprint record with a `Preprint of` correction naming the published PMID, and that PMID is the exemplar. A preprint with no published version yet cannot be an exemplar, because helix has no `doi:` namespace (contract §0). The exemplar also passes the retraction gate before any lane starts, like any other `pmid:` claim; a `correction` on the paper is not a retraction.
 
 ## Fleet
 
@@ -106,7 +106,12 @@ Pins     = { "<owner>/<repo>": ^[0-9a-f]{40}$ }      # every repository the camp
 - `gate.read` is the lowest read status an artefact's template claims may carry, and it is never below `fulltext-claim-checked`, because anything lower does not render as a statement (contract §6).
 - A manifest is data, not evidence: nothing in it is ever copied into a claim.
 
-A worked manifest is [`examples/typable-transporters.json`](examples/typable-transporters.json): the Golgi export frontier, whose exemplar `pmid:37437570` is an open-access paper, over two lanes. The programmable-receptor frontier cannot be declared the same way yet, because its exemplar is a preprint with no PMID.
+Two worked manifests, each two lanes:
+
+| File | Frontier | Exemplar |
+|---|---|---|
+| [`examples/programmable-receptors.json`](examples/programmable-receptors.json) | `sensory` at the `membrane` | `pmid:39633047`, synthetic GPCRs (Nature 2025), reached from the preprint `10.1101/2024.04.15.589622` |
+| [`examples/typable-transporters.json`](examples/typable-transporters.json) | `communication` through the `golgi` | `pmid:37437570`, engineered RNA export (Cell 2023) |
 
 ## Run state
 
