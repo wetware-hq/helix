@@ -72,7 +72,6 @@ cid := ^cid:[0-9a-f]{64}$                     # a claim reference, never a page 
 
 - The reference must match its namespace pattern exactly, so each object has one spelling (`pdb:1m17` is refused). Any other namespace, `aa:` and `doi:10.1038/...` are refused with `bad_id`.
 - A `dna:` page is a synthetic chromosome, the first-class asset of the chain. Its unit is the base (1 base, n bases). Its authority is the `Bases` contract named in `genome.json` `chain`; with `chain` null no `dna:` page can be created (`unknown_locus`). The sequence is never stored: the token holds only a commitment to it (`sequence-root`) and its length in bases, and both are fixed once committed at mint. Polymerizable means printable: the chromosome is a real-world asset, and `polymerize` records a print of the committed sequence without changing it.
-- A gene-to-protein path composes `transcribed-to` from gene to transcript with `translated-to` from transcript to protein.
 - Each print is a `printed` claim: print number and receipt, read from the `Polymerized` log at its block (`docs/pin-references.md` §Chain rows). A print happens once, so `printed` is never superseded. A reader replays the print chain from `sequence-root` (`head = keccak256(head || receipt)`) over the distinct `printed` values in print-number order, refuted or not (a finalized log is the print, so every one is folded), each print number once (two claims for one print, such as a higher `read`, bind the same log and hold the same value), and checks it against `headOf`. A receipt is the head of the print's read-back `loop1` (`wetware-hq/web` contract §12); it commits to that read-back frame for replay against the committed sequence.
 - `plan` is scratch only: a `tess1` plan root, machine and part count an agent proposes as the way to build the committed sequence (`wetware-hq/tesseract` contract §9). It is a hypothesis, so it renders under Hypotheses, never as a fact, and it never becomes a `printed` receipt: a print's read-back is what can agree with it. A plan's target root is the unsalted `sha256` of the sequence, while `sequence-root` is the `Bases` commitment `sha256(salt ‖ bases)`, so the two cannot be compared — the claim binds by subject, and `length` is what a reader without the salt checks against the plan's part spans.
 - On a `dna:` page, `sequence-root` and `length` are fixed at mint, and no `dna:` claim is superseded. A reader queries mutable token state directly from the chain.
@@ -152,6 +151,8 @@ Two claims that differ only in attestations have the same `cid`, so the second i
 | `same-as`, `transcribed-to`, `translated-to`, `part-of`, `binds` | `id` | §0 |
 | `cites` | `id` | `pmid:` only |
 | `supports`, `refutes` | `cid` | template only; the target is already in the locus or earlier in the same `append`; pin is a paper with an attestation (`docs/pin-references.md`) |
+
+A gene-to-protein path is `transcribed-to` from gene to transcript, then `translated-to` from transcript to protein; there is no shortcut predicate.
 
 ## §4 Flow laws
 
