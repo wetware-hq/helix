@@ -184,9 +184,9 @@ async function offerResponse(id: string, env: Env, url: URL, code?: Code): Promi
   const count = locus?.claims.length ?? 0;
   const nonce = hex(crypto.getRandomValues(new Uint8Array(32)));
   const expires = new Date(Date.now() + 300_000).toISOString();
-  const offer = await buildOffer(id, parent, count, nonce, expires, env, url);
+  const offer = await buildOffer(id, parent, count, nonce, expires, env, url, code);
   await db.putOffer(nonce, offer as unknown as Record<string, unknown>, expires);
-  const body = code ? { ...offer, error: code } : offer;
+  const body = offer;
   return new Response(JSON.stringify(body), {
     status: 402,
     headers: {
@@ -204,6 +204,7 @@ async function buildOffer(
   expires: string,
   env: Env,
   url: URL,
+  code?: Code,
 ): Promise<Offer> {
   const [ns, ref] = splitId(id);
   const tag = ns === "ensembl" ? (ref.startsWith("ENSG") ? "gene" : "transcript") : TAGS[ns];
@@ -217,7 +218,7 @@ async function buildOffer(
   };
   const offer = {
     x402Version: 2 as const,
-    error: "edit requires a signed append-only contribution",
+    error: code ?? "edit requires a signed append-only contribution",
     resource: {
       url: `${url.origin}/wiki/${id}`,
       description: id,
