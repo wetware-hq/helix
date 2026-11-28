@@ -46,6 +46,8 @@ describe("A2A JSON-RPC binding", () => {
     expect(await code("GetTask")).toBe(-32001);
     expect(await code("SendStreamingMessage")).toBe(-32004);
     expect(await code("message/send")).toBe(-32601);
+    const list = (await (await a2a(rpc("ListTasks"), "x", dispatch)).json()) as any;
+    expect(list.result).toEqual({ tasks: [], nextPageToken: "", pageSize: 0, totalSize: 0 });
     const bad = await a2a(rpc("SendMessage", { message: { parts: [{ text: "hello" }] } }), "x", dispatch);
     expect(((await bad.json()) as any).error.code).toBe(-32602);
   });

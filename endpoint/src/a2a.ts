@@ -137,9 +137,10 @@ export async function a2a(request: Request, origin: string, dispatch: Dispatch):
     case "GetTask":
     case "CancelTask":
       return rpcError(id, "task", "no_tasks");
+    case "ListTasks":
+      return rpcResult(id, { tasks: [], nextPageToken: "", pageSize: 0, totalSize: 0 });
     case "SendStreamingMessage":
     case "SubscribeToTask":
-    case "ListTasks":
     case "CreateTaskPushNotificationConfig":
     case "GetTaskPushNotificationConfig":
     case "ListTaskPushNotificationConfigs":
