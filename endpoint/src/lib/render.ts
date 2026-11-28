@@ -58,22 +58,23 @@ export async function classify(claims: Claim[]): Promise<Sections> {
     if (!index.has(c)) index.set(c, i);
   });
 
-  const counted = claims.map((c) => c.strand === "template");
+  const live = claims.map((c) => c.strand === "template");
   const refuted = new Set<number>();
   const disputed = new Set<number>();
   for (let i = claims.length - 1; i >= 0; i--) {
     const c = claims[i];
-    if (c.predicate !== "refutes" || !counted[i]) continue;
+    if (c.predicate !== "refutes" || !live[i]) continue;
     const target = index.get(("cid" in c.object ? c.object.cid : "") as string);
     if (target === undefined) continue;
     if (claims[target].predicate === "refutes" && readRank(c.read) >= readRank(claims[target].read)) {
-      counted[target] = false;
-      continue;
+      live[target] = false;
     }
     if (readRank(c.read) >= CHECKED) refuted.add(target);
     else disputed.add(target);
   }
   for (const i of refuted) disputed.delete(i);
+  // serve-endpoint §Rendering: counted := template, and not the target of a counted refutes claim.
+  const counted = claims.map((c, i) => c.strand === "template" && !refuted.has(i) && !disputed.has(i));
 
   // A counted held-by or prints claim on a dna: page is superseded by a counted claim of
   // the same predicate pinned at a higher block.
@@ -98,7 +99,7 @@ export async function render(id: string, locus: Locus, disclaimer: string): Prom
 
   const header: string[] = ["# `" + id + "`"];
   claims.forEach((c, i) => {
-    if (c.predicate !== "label" || !counted[i] || refuted.has(i)) return;
+    if (c.predicate !== "label" || !counted[i]) return;
     const lit = "lit" in c.object ? c.object.lit : "";
     header.push("name: `" + lit + "`" + (readRank(c.read) < CHECKED ? " (" + c.read + ")" : ""));
   });

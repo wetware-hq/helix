@@ -142,3 +142,43 @@ describe("keys", () => {
     expect(isKey(key.slice(0, 42) + "h")).toBe(false);
   });
 });
+
+describe("refutation chains", () => {
+  const pin = (n: string) => ({
+    source: "pmid",
+    release: "r1",
+    url: `https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:${n}%20AND%20SRC:MED&format=json&resultType=core`,
+    field: "/resultList/result/0/pmid",
+    digest: "sha256:" + "0".repeat(64),
+  });
+  const refute = (target: string, n: string, read: Claim["read"]): Claim => ({
+    subject: "uniprot:P00533",
+    predicate: "refutes",
+    object: { cid: target },
+    strand: "template",
+    pin: pin(n),
+    read,
+  });
+
+  it("renders an overturned checked refutation as refuted, not as a fact", async () => {
+    const base = GENOME_SEED.loci["uniprot:P00533"].claims.slice(0, 2);
+    const a = refute(await cid(base[1]), "1", "fulltext-claim-checked");
+    const b = refute(await cid(a), "2", "fulltext-claim-checked");
+    const page = await render("uniprot:P00533", { claims: [...base, a, b], root: "r" }, DISCLAIMER);
+    const facts = page.split("## Facts")[1].split("\n\n")[0];
+    expect(facts).toContain("has length `1210`");
+    expect(facts).not.toContain(a.object && "cid" in a.object ? a.object.cid : "x");
+    expect(page).toContain("## Refuted\n- `uniprot:P00533` refutes `" + (a.object as { cid: string }).cid);
+  });
+
+  it("indexes a disputed relationship as a hypothesis", async () => {
+    const claims = GENOME_SEED.loci["hgnc:3236"].claims;
+    const d = refute(await cid(claims[2]), "3", "abstract-read");
+    const og = await buildIndex(
+      { ...GENOME_SEED, loci: { "hgnc:3236": { claims: [...claims, d], root: "r" } } },
+      "2026-11-28",
+    );
+    expect(og).toContain("->[:hypothesis] ensembl:ENSG00000146648");
+    expect(og).not.toContain("->[:same-as] ensembl:ENSG00000146648");
+  });
+});

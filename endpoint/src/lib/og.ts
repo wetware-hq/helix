@@ -18,12 +18,12 @@ function keywords(label: string): string {
 }
 
 async function pageNode(id: string, claims: Claim[], root: string, updated: string): Promise<string> {
-  const { counted, refuted } = await classify(claims);
+  const { counted } = await classify(claims);
   const label = labelOf(claims, counted);
   const edges: string[] = [];
   claims.forEach((c, i) => {
     if (!("id" in c.object)) return;
-    const fact = c.strand === "template" && counted[i] && !refuted.has(i) && readRank(c.read) >= CHECKED;
+    const fact = counted[i] && readRank(c.read) >= CHECKED;
     edges.push("->[:" + (fact ? c.predicate : "hypothesis") + "] " + c.object.id);
   });
   return [
