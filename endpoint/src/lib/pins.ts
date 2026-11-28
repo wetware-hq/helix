@@ -228,9 +228,12 @@ export async function attestationError(
   return null;
 }
 
-/** The three-source retraction gate. */
-export async function gate(pmid: string): Promise<"clear" | "retracted" | "unavailable"> {
-  const e = await fetchJson(EUROPEPMC(pmid));
+export type Get = (url: string) => Promise<Fetched | "too_many">;
+
+/** The three-source retraction gate; `get` counts and caches the edit's fetches. */
+export async function gate(pmid: string, get: Get): Promise<"clear" | "retracted" | "unavailable" | "too_large"> {
+  const e = await get(EUROPEPMC(pmid));
+  if (e === "too_many") return "too_large";
   if (e.state === "unavailable") return "unavailable";
   if (e.state === "absent") return "unavailable";
   const result = pointer(e.body, "/resultList/result/0");
@@ -239,7 +242,8 @@ export async function gate(pmid: string): Promise<"clear" | "retracted" | "unava
   const types = Array.isArray(pubTypes) ? pubTypes : pubTypes === undefined ? [] : [pubTypes];
   if (types.some((t) => t === "Retracted Publication")) return "retracted";
 
-  const openalex = await fetchJson(`https://api.openalex.org/works/pmid:${pmid}`);
+  const openalex = await get(`https://api.openalex.org/works/pmid:${pmid}`);
+  if (openalex === "too_many") return "too_large";
   if (openalex.state === "unavailable") return "unavailable";
   if (openalex.state === "ok" && pointer(openalex.body, "/is_retracted") === true) return "retracted";
 
@@ -247,7 +251,8 @@ export async function gate(pmid: string): Promise<"clear" | "retracted" | "unava
   if (typeof doi !== "string" || !/^10\.[0-9]{4,9}\/[-._;()/:A-Za-z0-9]+$/.test(doi)) {
     return typeof doi === "string" ? "unavailable" : "clear";
   }
-  const crossref = await fetchJson(`https://api.crossref.org/works/${encodeURIComponent(doi)}`);
+  const crossref = await get(`https://api.crossref.org/works/${encodeURIComponent(doi)}`);
+  if (crossref === "too_many") return "too_large";
   if (crossref.state === "unavailable") return "unavailable";
   if (crossref.state === "ok") {
     const updatedBy = pointer(crossref.body, "/message/updated-by");

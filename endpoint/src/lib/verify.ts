@@ -209,11 +209,8 @@ export async function checkEdit(input: CheckInput): Promise<Code | null> {
     if (target?.kind === "paper") pmids.add(target.pmid);
   }
   for (const pmid of pmids) {
-    if (fetcher.count >= MAX_FETCHES) return "too_large";
-    const verdict = await gate(pmid);
-    fetcher.count += 3;
-    if (verdict === "retracted") return "retracted";
-    if (verdict === "unavailable") return "unavailable";
+    const verdict = await gate(pmid, (u) => fetcher.get(u));
+    if (verdict !== "clear") return verdict;
   }
 
   return null;
