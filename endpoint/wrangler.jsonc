@@ -1,0 +1,22 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "helix-endpoint",
+  "main": "src/endpoint.ts",
+  "compatibility_date": "2026-11-28",
+  "observability": { "enabled": true },
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [
+    { "pattern": "getwetware.xyz/wiki/*", "zone_name": "getwetware.xyz" },
+    { "pattern": "getwetware.xyz/index", "zone_name": "getwetware.xyz" },
+    { "pattern": "getwetware.xyz/.well-known/agent-card.json", "zone_name": "getwetware.xyz" }
+  ],
+  "vars": { "HELIX_KEY": "rqtfDp9sW2dLoSo0OVxwttCPr7isVreCpr5BUbS4NKg" },
+  "services": [
+    { "binding": "VERIFIER", "service": "helix-verifier" },
+    { "binding": "SEALER", "service": "helix-sealer" }
+  ],
+  "durable_objects": {
+    "bindings": [{ "name": "STORE", "class_name": "Store", "script_name": "helix-sealer" }]
+  }
+}
