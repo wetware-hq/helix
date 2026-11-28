@@ -154,7 +154,11 @@ async function one(call: unknown, origin: string, dispatch: Dispatch): Promise<R
     case "CancelTask":
       return rpcError(id, "task", "no_tasks");
     case "ListTasks":
-      return rpcResult(id, { tasks: [], nextPageToken: "", pageSize: 0, totalSize: 0 });
+    {
+      const asked = Number((rpc.params as { pageSize?: unknown } | undefined)?.pageSize);
+      const pageSize = Number.isInteger(asked) && asked >= 1 && asked <= 100 ? asked : 50;
+      return rpcResult(id, { tasks: [], nextPageToken: "", pageSize, totalSize: 0 });
+    }
     case "SendStreamingMessage":
     case "SubscribeToTask":
     case "CreateTaskPushNotificationConfig":
