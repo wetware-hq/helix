@@ -30,9 +30,9 @@ wetware-hq
   tesseract   .tess   build plan          -> plan root           (scratch, via the dna: page subject)
   web         .dna    sequence, primitive -> sequence root       (never reaches helix)
               pool1   arr<oligo>          -> reads of a print
-              loop1   read-back loop      -> head, view1 frames  printed receipt; view claim (scratch)
+              loop1   read-back loop      -> head, printed receipt
               .web    shallow network     -> web root            (not a dna: value)
-  bases       token   chromosome, ERC-721 -> token id, root, length, prints, head
+  bases       token   chromosome, ERC-721 -> token id, root, length, head
   helix       page    dna:<token id>      -> locus root          (this repository)
 ```
 
@@ -41,10 +41,10 @@ wetware-hq
 | `bases` | token id | the page ID `dna:<token id>` |
 | `bases` | `root` = `sha256(salt \|\| ascii(seq))`, the **chain root** | `sequence-root`, fixed at mint |
 | `bases` | length in bases | `length`, fixed at mint |
-| `bases` | holder, print count | `held-by`, `prints` |
 | `bases` + `web` loop1 | `Polymerized` receipt = loop head | `printed` |
-| `web` loop1 | a `view1` frame of the expected read-back | `view` (scratch) |
 | `tesseract` | plan root, over a target sequence root | scratch `plan` claim on the page subject (owned by the tesseract change) |
+
+Current ownership is queried directly from `Bases`; helix does not snapshot transfer-sensitive state.
 
 ## Rules
 

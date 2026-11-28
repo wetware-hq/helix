@@ -58,8 +58,8 @@ strip_version("ENST00000275493.7") = "ENST00000275493"
 | `pdb` | `label` | `https://data.rcsb.org/rest/v1/core/entry/{ref}` | `/struct/title` |
 | `chebi` | `label` | `https://www.ebi.ac.uk/chebi/backend/api/public/compound/{ref}/` | `/name` |
 | `pmid` | `label` | `https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:{ref}%20AND%20SRC:MED&format=json&resultType=core` | `/resultList/result/0/title` |
-| `dna` | `label`, `length`, `sequence-root`, `prints`, `held-by`, `printed` | `genome.json` `chain.rpc` (chain row) | `/tokenURI`, `/lengthOf`, `/rootOf`, `/printsOf`, `/ownerOf`, `/Polymerized` |
-| any | `cites`, `supports`, `refutes`, `binds`, `encodes`, `part-of` | the `pmid` `url` above, with the paper's PMID | `/resultList/result/0/pmid` |
+| `dna` | `label`, `length`, `sequence-root`, `printed` | `genome.json` `chain.rpc` (chain row) | `/tokenURI`, `/lengthOf`, `/rootOf`, `/Polymerized` |
+| any | `cites`, `supports`, `refutes`, `binds`, `part-of` | the `pmid` `url` above, with the paper's PMID | `/resultList/result/0/pmid` |
 
 The table is the allowlist. A verifier fetches nothing else, so a pin cannot point at a private address, a path on a shared host, or a site the editor controls.
 
@@ -71,10 +71,9 @@ A `dna:` pin reads the `Bases` contract in `genome.json` `chain` with one JSON-R
 release     = "block " n                               # n decimal, no leading zero
 value(pin)  = abi_decode(POST pin.url { "jsonrpc": "2.0", "id": 1, "method": "eth_call",
                 params: [{ to: chain.contract, data: selector(pin.field) || uint256(ref) }, hex(n)] })
-selector    = first 4 bytes of keccak256 of tokenURI(uint256) | lengthOf(uint256) | rootOf(uint256) | printsOf(uint256) | ownerOf(uint256)
-binds(c)    = str(value)                      == c.object.lit     # label (tokenURI); length, prints as decimal, no leading zero
+selector    = first 4 bytes of keccak256 of tokenURI(uint256) | lengthOf(uint256) | rootOf(uint256)
+binds(c)    = str(value)                      == c.object.lit     # label (tokenURI); length as decimal, no leading zero
             | lowercase_hex(value)            == c.object.lit     # sequence-root, no 0x
-            | chain.network ":" lower(value)  == c.object.lit     # held-by, CAIP-10
 logs(pin)   = POST pin.url { "jsonrpc": "2.0", "id": 1, "method": "eth_getLogs",
                 params: [{ address: chain.contract, fromBlock: hex(n), toBlock: hex(n),
                            topics: [keccak256("Polymerized(uint256,address,bytes32,uint64,bytes32)"), uint256(ref)] }] }
@@ -85,7 +84,7 @@ value(pin)  = { "prints": str(prints), "receipt": lowercase_hex(receipt), "head"
 ```
 
 - `{ref}` is the 32-hex `dna:` reference read as a `uint256`. `pin.url` must equal `chain.rpc`, which is HTTPS; the fetch rules above apply.
-- On chain rows `release` is evidence, not a hint: the call is made at block `n`, so the value is reproducible and a later transfer or print never causes `hash_drift`. A newer `held-by` or `prints` is a new claim pinned at a newer block; `sequence-root` and `length` never change after mint.
+- On chain rows `release` is evidence, not a hint: the call is made at block `n`, so the value is reproducible and a later print never causes `hash_drift`. `sequence-root` and `length` never change after mint, and no `dna:` claim is superseded. A reader derives the print total from the ordered `printed` claims; replay against `headOf` proves that set is complete.
 - A chain-row pin's block `n` must be finalized: at or below `eth_getBlockByNumber("finalized", false).number` read from `chain.rpc` once per edit. A later block is `unavailable`, so a reorganization cannot remove a value after it is sealed.
 - A `printed` pin is evidence of one print: a log at block `n` cannot change, so it is never superseded and never causes `hash_drift`. No log matching the claim is `evidence_mismatch`.
 - An execution revert (for example `ERC721NonexistentToken`) means absent. Any other JSON-RPC error is `unavailable`.
@@ -96,7 +95,7 @@ value(pin)  = { "prints": str(prints), "receipt": lowercase_hex(receipt), "head"
 Papers have no JSON field that states a finding, so `binds` cannot be computed for paper rows.
 
 - For `cites`, the pinned PMID must equal the object, and a reader attests that the subject is discussed in the paper.
-- For `supports`, `refutes`, `binds`, `encodes` and `part-of`, the pinned PMID names the paper, and a reader attests that the paper says it.
+- For `supports`, `refutes`, `binds` and `part-of`, the pinned PMID names the paper, and a reader attests that the paper says it.
 - In both cases the attestation is the bind (table below). A paper claim with no valid attestation is `evidence_mismatch`.
 
 ## Source ceilings
