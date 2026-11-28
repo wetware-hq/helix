@@ -107,7 +107,7 @@ export const PREDICATES: Record<string, Rule> = {
     kind: "lit", strand: "scratch", dnaOnly: true,
     lit: /^tess1:[0-9a-f]{64} [a-z0-9][a-z0-9-]{1,30} [1-9][0-9]{0,5}$/,
   },
-  glyph: { kind: "lit", strand: "scratch", dnaOnly: true },
+  view: { kind: "lit", strand: "scratch", dnaOnly: true },
   "same-as": { kind: "id" },
   "transcribed-to": { kind: "id" },
   "translated-to": { kind: "id" },
@@ -120,7 +120,7 @@ export const PREDICATES: Record<string, Rule> = {
 };
 
 const LABEL_LIT = /^[^`<>\[\]|\n]{1,300}$/;
-const GLYPH = /^k=([1-3]) ([ .:=+*#%@-]{2,8}(?:\/[ .:=+*#%@-]{2,8}){1,7})$/;
+const VIEW = /^size=([1-8]) ([ .:=+*#%@-]{1,8}(?:\/[ .:=+*#%@-]{1,8}){0,7})$/;
 
 export function labelLitOk(lit: string): boolean {
   // 1-300 printable characters, none of ` < > [ ] | or a newline.
@@ -131,10 +131,10 @@ export function labelLitOk(lit: string): boolean {
   });
 }
 
-export function glyphOk(lit: string): boolean {
-  const m = GLYPH.exec(lit);
+export function viewOk(lit: string): boolean {
+  const m = VIEW.exec(lit);
   if (!m) return false;
-  const side = 2 ** Number(m[1]);
+  const side = Number(m[1]);
   const rows = m[2].split("/");
   return rows.length === side && rows.every((r) => [...r].length === side);
 }
@@ -206,7 +206,7 @@ export function predicateError(c: Claim): Code | null {
   if (!("lit" in c.object)) return "bad_predicate";
   const lit = c.object.lit;
   if (c.predicate === "label") return labelLitOk(lit) ? null : "bad_predicate";
-  if (c.predicate === "glyph") return glyphOk(lit) ? null : "bad_predicate";
+  if (c.predicate === "view") return viewOk(lit) ? null : "bad_predicate";
   if (rule.lit && !rule.lit.test(lit)) return "bad_predicate";
   return null;
 }

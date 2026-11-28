@@ -20,7 +20,7 @@ const VERB: Record<string, string> = {
   prints: "has print count",
   printed: "printed",
   plan: "would be built by",
-  glyph: "is expected to look like",
+  view: "is expected to look like",
   label: "is named",
 };
 

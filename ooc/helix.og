@@ -5,7 +5,7 @@ updated: 2026-11-28
 domain: helix|wiki|central-dogma|campaign
 scope: all
 governs: docs/follow-agent-contract.md
-checksum: sha256:d67ccb2fd680c2dcc541e81b44b559fad0dd69c6121d02fbe6671381fd55c92d
+checksum: sha256:6c7e54b9c010c634aa981857333cfb17074b24ae502a59e847fb3a4ed1376986
 ::end
 
 ::schema
@@ -17,7 +17,7 @@ scope-levels: [all, reader, editor, verifier, sealer]
 ::index
 # id | type | scope | conf | keywords
 banner | meta | all | 1.00 | academic, research, oversight, banner
-contract | stage | all | 1.00 | ids, dna-rna-protein, dna-chromosome, printed, plan, glyph, strands, algebra, flow-laws, codes, predicates
+contract | stage | all | 1.00 | ids, dna-rna-protein, dna-chromosome, printed, plan, view, strands, algebra, flow-laws, codes, predicates
 pins | stage | all | 1.00 | pin, chain-row, ceiling, retraction-gate, no-tertiary
 resolve | stage | all | 1.00 | name, accession, exact, unresolved, unavailable
 transcribe | stage | all | 1.00 | 402, echo, append-only, idempotency-key
@@ -169,7 +169,7 @@ Load campaigns/pace-frontier.md.
 
 ::node [id=commit type=stage confidence=1.00 scope=all updated=2026-11-28]
 ::dense
-gate=needed+predicted+corroborated+pinnable|released-only|template=cites,supports,refutes,chain-rows|scratch=plan,glyph|trace-is-never-a-pin
+gate=needed+predicted+corroborated+pinnable|released-only|template=cites,supports,refutes,chain-rows|scratch=plan,view|trace-is-never-a-pin
 ::end
 ::full
 Load campaigns/commit-artefact.md.
@@ -253,5 +253,6 @@ on-fail: ->[:requires] contract
 2026-11-28|added|campaigns/: a fleet over one frontier, its manifest and the pace metric|WET-138
 2026-11-28|added|artefact gate: released only, existing predicates, a trace is never a pin|WET-138
 2026-11-28|added|live endpoint at getwetware.xyz (endpoint/), role keys in genome.json|WET-125
+2026-11-28|changed|dna: scratch glyph (cgr1) replaced by scratch view (view1); web excised cgr1|WET-139
 ::end
 ::end
