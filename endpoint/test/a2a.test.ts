@@ -55,7 +55,7 @@ describe("A2A JSON-RPC binding", () => {
   it("reads the locus when only JSON output is accepted", async () => {
     const msg = { messageId: "m4", role: "ROLE_USER", parts: [{ text: "uniprot:P00533" }] };
     const params = { message: msg, configuration: { acceptedOutputModes: ["application/json"] } };
-    await a2a(rpc("SendMessage", params), "x", dispatch);
+    await a2a(rpc("SendMessage", params), "https://getwetware.xyz", dispatch);
     expect(seen.at(-1)!.headers.get("Accept")).toBe("application/json");
   });
 
