@@ -1,0 +1,19 @@
+{
+  "name": "helix-endpoint",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "gen": "node scripts/gen-static.mjs",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "deploy:endpoint": "wrangler deploy -c wrangler.jsonc",
+    "deploy:verifier": "wrangler deploy -c wrangler.verifier.jsonc",
+    "deploy:sealer": "wrangler deploy -c wrangler.sealer.jsonc"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261127.1",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4",
+    "wrangler": "^4.48.0"
+  }
+}

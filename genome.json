@@ -1,11 +1,21 @@
 {
   "helix": 1,
   "roles": {
-    "endpoint": [],
-    "verifier": [],
-    "sealer": [],
-    "reader": [],
-    "oracle": []
+    "endpoint": [
+      "rqtfDp9sW2dLoSo0OVxwttCPr7isVreCpr5BUbS4NKg"
+    ],
+    "verifier": [
+      "V4TamcyoAkL2jLqgvvQu0J5SfZnpCFkag-aUV6q5KS4"
+    ],
+    "sealer": [
+      "fAabsOwPzE37fz8pYqTY-WRyGzHZt8P3HfbUcDD1Mlk"
+    ],
+    "reader": [
+      "_vBQEz48_iHIEIhEUlSSQkyz-qYmWmvIrr10byOlDW4"
+    ],
+    "oracle": [
+      "MNrtx39RNQ_TsKNj_2u2y4W8B8x6RxEVntOeTttEyPg"
+    ]
   },
   "chain": null,
   "loci": {

@@ -5,7 +5,7 @@ updated: 2026-11-28
 domain: helix|wiki|central-dogma|campaign
 scope: all
 governs: docs/follow-agent-contract.md
-checksum: sha256:94d68f5c1b558f4474084d6e732d9ff3d4c319deadb90142c9e7e46f3cfb64a7
+checksum: sha256:6c7e54b9c010c634aa981857333cfb17074b24ae502a59e847fb3a4ed1376986
 ::end
 
 ::schema
@@ -252,6 +252,7 @@ on-fail: ->[:requires] contract
 2026-11-26|added|dna: scratch plan (tess1 plan root, machine, parts); binds by subject, sequence-root is salted|WET-139
 2026-11-28|added|campaigns/: a fleet over one frontier, its manifest and the pace metric|WET-138
 2026-11-28|added|artefact gate: released only, existing predicates, a trace is never a pin|WET-138
+2026-11-28|added|live endpoint at getwetware.xyz (endpoint/), role keys in genome.json|WET-125
 2026-11-28|changed|dna: scratch glyph (cgr1) replaced by scratch view (view1); web excised cgr1|WET-139
 ::end
 ::end
