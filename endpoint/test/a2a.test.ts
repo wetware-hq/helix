@@ -95,3 +95,4 @@ describe("A2A JSON-RPC binding", () => {
     expect(askOf({ parts: [{ text: "tell me about EGFR" }] })).toBe(null);
   });
 });
+

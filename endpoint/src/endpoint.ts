@@ -39,7 +39,12 @@ const TAGS: Record<string, string> = {
 const handler = {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
-    const path = decodeURIComponent(url.pathname);
+    let path: string;
+    try {
+      path = decodeURIComponent(url.pathname);
+    } catch {
+      return error("bad_id", null, 400);
+    }
 
     if (path === "/.well-known/agent-card.json") return agentCard(url);
     if (path === "/a2a") {
