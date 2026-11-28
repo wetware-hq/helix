@@ -17,6 +17,7 @@ import type { Json } from "./lib/jcs";
 
 export { Store } from "./store";
 import { A2A_VERSION, a2a } from "./a2a";
+import { wantsJson } from "./lib/accept";
 
 type Env = {
   STORE: DurableObjectNamespace<Store>;
@@ -141,10 +142,6 @@ async function post(id: string, env: Env, request: Request, url: URL): Promise<R
   if (!sr.success) return refusal((sr.errorReason ?? "bad_envelope") as Code, id, env, url);
 
   return pageResponse(id, env, sr as unknown as Record<string, unknown>, wantsJson(request));
-}
-
-function wantsJson(request: Request): boolean {
-  return (request.headers.get("Accept") ?? "").includes("application/json");
 }
 
 async function pageResponse(

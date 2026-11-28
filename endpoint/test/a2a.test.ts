@@ -96,3 +96,15 @@ describe("A2A JSON-RPC binding", () => {
   });
 });
 
+
+import { wantsJson } from "../src/lib/accept";
+describe("Accept negotiation", () => {
+  const req = (accept?: string) => new Request("https://getwetware.xyz/wiki/pdb:1M17", accept ? { headers: { Accept: accept } } : {});
+  it("prefers Markdown unless JSON ranks higher", () => {
+    expect(wantsJson(req())).toBe(false);
+    expect(wantsJson(req("*/*"))).toBe(false);
+    expect(wantsJson(req("text/markdown, application/json;q=0"))).toBe(false);
+    expect(wantsJson(req("application/json"))).toBe(true);
+    expect(wantsJson(req("text/markdown;q=0.5, application/json"))).toBe(true);
+  });
+});
