@@ -157,6 +157,13 @@ export async function a2a(request: Request, origin: string, dispatch: Dispatch):
   if (!message || !ask) return rpcError(id, "params", "need_helix_request");
   if (typeof message.taskId === "string" && message.taskId !== "") return rpcError(id, "task", "no_tasks");
 
+  // A client that accepts JSON but not Markdown gets the locus.
+  const modes = (rpc.params?.configuration as { acceptedOutputModes?: unknown } | undefined)?.acceptedOutputModes;
+  if (Array.isArray(modes) && modes.length > 0) {
+    const takes = (m: string) => modes.some((x) => x === m || x === m.split("/")[0] + "/*" || x === "*/*");
+    if (!takes("text/markdown") && takes("application/json")) ask.accept = "json";
+  }
+
   const url = `${origin}/wiki/${ask.id}`;
   const headers: Record<string, string> = {};
   if (ask.accept === "json") headers.Accept = "application/json";

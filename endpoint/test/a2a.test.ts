@@ -52,6 +52,13 @@ describe("A2A JSON-RPC binding", () => {
     expect(((await bad.json()) as any).error.code).toBe(-32602);
   });
 
+  it("reads the locus when only JSON output is accepted", async () => {
+    const msg = { messageId: "m4", role: "ROLE_USER", parts: [{ text: "uniprot:P00533" }] };
+    const params = { message: msg, configuration: { acceptedOutputModes: ["application/json"] } };
+    await a2a(rpc("SendMessage", params), "x", dispatch);
+    expect(seen.at(-1)!.headers.get("Accept")).toBe("application/json");
+  });
+
   it("refuses a message bound to a task, without dispatching", async () => {
     const before = seen.length;
     const msg = { messageId: "m3", role: "ROLE_USER", taskId: "t1", parts: [{ data: { skill: "edit", id: "pdb:1M17" } }] };
