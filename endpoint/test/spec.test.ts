@@ -62,17 +62,19 @@ describe("claim validation", () => {
     );
   });
 
-  it("checks the cgr1 glyph grid", () => {
+  it("checks the view1 grid", () => {
     const base: Claim = {
       subject: "dna:" + "a".repeat(32),
-      predicate: "glyph",
-      object: { lit: "k=1 ab/cd" },
+      predicate: "view",
+      object: { lit: "size=2 ab/cd" },
       strand: "scratch",
       pin: null,
       read: "unread",
     };
-    expect(predicateError({ ...base, object: { lit: "k=1 .:/=+" } })).toBe(null);
-    expect(predicateError({ ...base, object: { lit: "k=1 .:/=+/##" } })).toBe("bad_predicate");
+    expect(predicateError({ ...base, object: { lit: "size=2 .:/=+" } })).toBe(null);
+    expect(predicateError({ ...base, object: { lit: "size=1 #" } })).toBe(null);
+    expect(predicateError({ ...base, object: { lit: "size=2 .:/=+/##" } })).toBe("bad_predicate");
+    expect(predicateError({ ...base, object: { lit: "k=1 .:/=+" } })).toBe("bad_predicate");
   });
 
   it("refuses a label literal holding markdown", () => {
