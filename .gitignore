@@ -4,3 +4,6 @@ __pycache__/
 target/
 archive/
 *.jsonl
+node_modules/
+.wrangler/
+.dev.vars
