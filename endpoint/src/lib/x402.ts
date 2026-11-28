@@ -92,3 +92,32 @@ export async function offerDigest(offer: Offer): Promise<string> {
 export function appendOf(payload: PaymentPayload): Claim[] {
   return payload.payload.rna.append;
 }
+
+export const MAX_BODY = 256 * 1024;
+
+/** Read a request body, stopping as soon as it passes `limit` bytes; null when it does. */
+export async function readBody(request: Request, limit = MAX_BODY): Promise<string | null> {
+  const declared = Number(request.headers.get("content-length") ?? "0");
+  if (declared > limit) return null;
+  const reader = request.body?.getReader();
+  if (!reader) return "";
+  const chunks: Uint8Array[] = [];
+  let size = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    size += value.byteLength;
+    if (size > limit) {
+      await reader.cancel();
+      return null;
+    }
+    chunks.push(value);
+  }
+  const all = new Uint8Array(size);
+  let at = 0;
+  for (const c of chunks) {
+    all.set(c, at);
+    at += c.byteLength;
+  }
+  return new TextDecoder().decode(all);
+}

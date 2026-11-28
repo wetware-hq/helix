@@ -5,7 +5,7 @@ import { digest } from "./lib/crypto";
 import { foldRoot, rnaShapeOk, type Receipt } from "./lib/model";
 import { store, type SettleOutcome, type Store } from "./store";
 import {
-  NETWORK, helixSignatureOk, offerDigest, rnaDigest,
+  NETWORK, helixSignatureOk, offerDigest, readBody, rnaDigest,
   type Offer, type PaymentPayload, type SettleResponse, type VerifyResponse,
 } from "./lib/x402";
 import type { Json } from "./lib/jcs";
@@ -24,8 +24,8 @@ export default {
     if (request.method !== "POST" || url.pathname !== "/settle") {
       return json({ code: "bad_envelope", id: null }, 404);
     }
-    const raw = await request.text();
-    if (raw.length > 256 * 1024) return json({ code: "too_large", id: null }, 413);
+    const raw = await readBody(request);
+    if (raw === null) return json({ code: "too_large", id: null }, 413);
 
     let body: { paymentPayload: PaymentPayload; offer: Offer; verifyResponse: VerifyResponse };
     try {

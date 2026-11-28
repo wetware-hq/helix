@@ -10,7 +10,7 @@ import { isId, rnaShapeOk, rootEmpty, splitId, type Code, type Locus } from "./l
 import { RENDERER, render } from "./lib/render";
 import { store, type Store } from "./store";
 import {
-  NETWORK, b64json, helixSignature, rnaDigest, unb64json,
+  MAX_BODY, NETWORK, b64json, helixSignature, rnaDigest, unb64json,
   type Offer, type OfferInfo, type PaymentPayload, type SettleResponse, type VerifyResponse,
 } from "./lib/x402";
 import type { Json } from "./lib/jcs";
@@ -73,9 +73,10 @@ async function get(id: string, env: Env, request: Request): Promise<Response> {
 }
 
 async function post(id: string, env: Env, request: Request, url: URL): Promise<Response> {
+  // The edit travels in the PAYMENT-SIGNATURE header; the body is never read.
   const header = request.headers.get("PAYMENT-SIGNATURE");
-  const raw = await request.text();
-  if (raw.length + (header?.length ?? 0) > 256 * 1024) return error("too_large", id, 413);
+  const declared = Number(request.headers.get("content-length") ?? "0");
+  if (declared + (header?.length ?? 0) > MAX_BODY) return error("too_large", id, 413);
 
   if (!header) return offerResponse(id, env, url);
 

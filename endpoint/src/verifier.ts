@@ -4,7 +4,7 @@ import { importSecret, signObject } from "./lib/crypto";
 import { checkEdit } from "./lib/verify";
 import { store, type Store } from "./store";
 import {
-  helixSignatureOk, offerDigest, rnaDigest, type Offer, type PaymentPayload, type VerifyResponse,
+  helixSignatureOk, offerDigest, readBody, rnaDigest, type Offer, type PaymentPayload, type VerifyResponse,
 } from "./lib/x402";
 import type { Json } from "./lib/jcs";
 
@@ -22,8 +22,8 @@ export default {
     if (request.method !== "POST" || url.pathname !== "/verify") {
       return json({ code: "bad_envelope", id: null }, 404);
     }
-    const raw = await request.text();
-    if (raw.length > 256 * 1024) return json({ code: "too_large", id: null }, 413);
+    const raw = await readBody(request);
+    if (raw === null) return json({ code: "too_large", id: null }, 413);
 
     let body: {
       paymentPayload: PaymentPayload;
