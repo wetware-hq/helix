@@ -75,7 +75,7 @@ async function get(id: string, env: Env, request: Request): Promise<Response> {
   const locus = await store(env as never).locus(id);
   if (!locus) return error("unknown_locus", id, 404);
   const headers = await pageHeaders(locus.root);
-  if ((request.headers.get("Accept") ?? "").includes("application/json")) {
+  if (wantsJson(request)) {
     return new Response(JSON.stringify(locus), {
       headers: { ...headers, "content-type": "application/json" },
     });
@@ -111,7 +111,7 @@ async function post(id: string, env: Env, request: Request, url: URL): Promise<R
     | null;
   if (prior) {
     if (prior.rna !== (await rnaDigest(rna))) return refusal("replay", id, env, url);
-    if (prior.response) return pageResponse(id, env, prior.response);
+    if (prior.response) return pageResponse(id, env, prior.response, wantsJson(request));
   }
 
   const offer = (await db.getOffer(rna.nonce)) as Offer | null;
@@ -140,12 +140,30 @@ async function post(id: string, env: Env, request: Request, url: URL): Promise<R
   if (!sr) return refusal("unavailable", id, env, url);
   if (!sr.success) return refusal((sr.errorReason ?? "bad_envelope") as Code, id, env, url);
 
-  return pageResponse(id, env, sr as unknown as Record<string, unknown>);
+  return pageResponse(id, env, sr as unknown as Record<string, unknown>, wantsJson(request));
 }
 
-async function pageResponse(id: string, env: Env, settle: Record<string, unknown>): Promise<Response> {
+function wantsJson(request: Request): boolean {
+  return (request.headers.get("Accept") ?? "").includes("application/json");
+}
+
+async function pageResponse(
+  id: string,
+  env: Env,
+  settle: Record<string, unknown>,
+  json: boolean,
+): Promise<Response> {
   const locus = (await store(env as never).locus(id)) as Locus;
   const headers = await pageHeaders(locus.root);
+  if (json) {
+    return new Response(JSON.stringify(locus), {
+      headers: {
+        ...headers,
+        "content-type": "application/json",
+        "PAYMENT-RESPONSE": b64json(settle as unknown as Json),
+      },
+    });
+  }
   const body = await render(id, locus, DISCLAIMER);
   return new Response(body, {
     headers: {
