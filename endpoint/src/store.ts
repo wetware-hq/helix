@@ -86,6 +86,29 @@ export class Store extends DurableObject {
 
   async putOffer(nonce: string, offer: Record<string, unknown>, expires: string): Promise<void> {
     await this.ctx.storage.put("offer:" + nonce, { offer, expires });
+    await this.sweepAt(Date.parse(expires));
+  }
+
+  /** Abandoned offers and spent nonces are dropped once their offer has expired. */
+  async alarm(): Promise<void> {
+    const now = Date.now();
+    let next = Infinity;
+    for (const prefix of ["offer:", "spent:"]) {
+      const rows = await this.ctx.storage.list<{ expires: string } | string>({ prefix });
+      const stale: string[] = [];
+      for (const [k, v] of rows) {
+        const at = Date.parse(typeof v === "string" ? v : v.expires);
+        if (at <= now) stale.push(k);
+        else next = Math.min(next, at);
+      }
+      for (let i = 0; i < stale.length; i += 128) await this.ctx.storage.delete(stale.slice(i, i + 128));
+    }
+    if (next !== Infinity) await this.ctx.storage.setAlarm(next + 1000);
+  }
+
+  private async sweepAt(at: number): Promise<void> {
+    const current = await this.ctx.storage.getAlarm();
+    if (current === null || current > at + 1000) await this.ctx.storage.setAlarm(at + 1000);
   }
 
   async getOffer(nonce: string): Promise<Record<string, unknown> | null> {
@@ -163,6 +186,7 @@ export class Store extends DurableObject {
       ["spent:" + input.nonce]: input.expires,
     });
     await this.ctx.storage.delete("offer:" + input.nonce);
+    await this.sweepAt(Date.parse(input.expires));
     return { state: "sealed", receipt, response: input.response };
   }
 }
