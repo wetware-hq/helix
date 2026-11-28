@@ -76,6 +76,21 @@ describe("A2A JSON-RPC binding", () => {
     expect(((await res.json()) as any).error.code).toBe(-32009);
   });
 
+  it("answers a JSON-RPC batch in order", async () => {
+    const call = (id: number, text: string) => ({
+      jsonrpc: "2.0", id, method: "SendMessage",
+      params: { message: { messageId: "b" + id, role: "ROLE_USER", parts: [{ text }] } },
+    });
+    const req = new Request("https://getwetware.xyz/a2a", {
+      method: "POST",
+      headers: { "A2A-Version": "1.0" },
+      body: JSON.stringify([call(1, "uniprot:P00533"), call(2, "hgnc:3236")]),
+    });
+    const out = (await (await a2a(req, "https://getwetware.xyz", dispatch)).json()) as any[];
+    expect(out.map((r) => r.id)).toEqual([1, 2]);
+    expect(seen.at(-1)!.url).toBe("https://getwetware.xyz/wiki/hgnc:3236");
+  });
+
   it("finds no helix request in prose", () => {
     expect(askOf({ parts: [{ text: "tell me about EGFR" }] })).toBe(null);
   });

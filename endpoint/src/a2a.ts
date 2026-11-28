@@ -30,17 +30,19 @@ const ERR = {
 
 type Id = string | number | null;
 
-function rpcError(id: Id, which: keyof typeof ERR, reason?: string): Response {
+type Reply = Record<string, unknown>;
+
+function rpcError(id: Id, which: keyof typeof ERR, reason?: string): Reply {
   const [code, message] = ERR[which];
   const error: Record<string, unknown> = { code, message };
   if (reason) {
     error.data = [{ "@type": "type.googleapis.com/google.rpc.ErrorInfo", reason, domain: "getwetware.xyz" }];
   }
-  return Response.json({ jsonrpc: "2.0", id, error });
+  return { jsonrpc: "2.0", id, error };
 }
 
-function rpcResult(id: Id, result: unknown): Response {
-  return Response.json({ jsonrpc: "2.0", id, result });
+function rpcResult(id: Id, result: unknown): Reply {
+  return { jsonrpc: "2.0", id, result };
 }
 
 /** This binding serves A2A 1.0 only; an empty version means 0.3, which it does not serve. */
@@ -118,16 +120,30 @@ export async function partsOf(res: Response): Promise<Part[]> {
 
 export async function a2a(request: Request, origin: string, dispatch: Dispatch): Promise<Response> {
   if (!versionOk(request.headers.get("A2A-Version") ?? new URL(request.url).searchParams.get("A2A-Version"))) {
-    return rpcError(null, "version", "a2a_version");
+    return Response.json(rpcError(null, "version", "a2a_version"));
   }
   const raw = await readBody(request, MAX_BODY);
-  if (raw === null) return rpcError(null, "request", "too_large");
-  let rpc: { jsonrpc?: string; id?: Id; method?: unknown; params?: Record<string, unknown> };
+  if (raw === null) return Response.json(rpcError(null, "request", "too_large"));
+  let body: unknown;
   try {
-    rpc = JSON.parse(raw);
+    body = JSON.parse(raw);
   } catch {
-    return rpcError(null, "parse");
+    return Response.json(rpcError(null, "parse"));
   }
+  // A JSON-RPC batch is answered in order, one call after another, so edits keep their order.
+  if (Array.isArray(body)) {
+    if (body.length === 0) return Response.json(rpcError(null, "request"));
+    const replies: Reply[] = [];
+    for (const call of body) replies.push(await one(call, origin, dispatch));
+    return Response.json(replies);
+  }
+  return Response.json(await one(body, origin, dispatch));
+}
+
+type Call = { jsonrpc?: string; id?: Id; method?: unknown; params?: Record<string, unknown> };
+
+async function one(call: unknown, origin: string, dispatch: Dispatch): Promise<Reply> {
+  const rpc = (call && typeof call === "object" ? call : null) as Call | null;
   const id: Id = rpc && (typeof rpc.id === "string" || typeof rpc.id === "number") ? rpc.id : null;
   if (!rpc || rpc.jsonrpc !== "2.0" || typeof rpc.method !== "string") return rpcError(id, "request");
 
