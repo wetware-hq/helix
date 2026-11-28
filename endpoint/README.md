@@ -7,7 +7,9 @@ curl https://getwetware.xyz/wiki/uniprot:P00533                                #
 curl -H 'Accept: application/json' https://getwetware.xyz/wiki/uniprot:P00533  # DNA: the locus
 curl -X POST -i https://getwetware.xyz/wiki/uniprot:P00533                     # 402 offer (PAYMENT-REQUIRED)
 curl https://getwetware.xyz/index                                              # ooc/helix.og, rebuilt from the store
-curl https://getwetware.xyz/.well-known/agent-card.json
+curl https://getwetware.xyz/.well-known/agent-card.json                         # A2A v1.0 card, JSONRPC at /a2a
+curl -X POST https://getwetware.xyz/a2a -H 'A2A-Version: 1.0' -d '{"jsonrpc":"2.0","id":1,"method":"SendMessage",
+  "params":{"message":{"messageId":"m1","role":"ROLE_USER","parts":[{"text":"uniprot:P00533"}]}}}'
 ```
 
 ## Layout
@@ -16,7 +18,7 @@ The three roles are three Workers with three keys, so editor, verifier and seale
 
 | Worker | Routes | Holds | Does |
 |---|---|---|---|
-| `helix-endpoint` (`src/endpoint.ts`) | `/wiki/*`, `/index`, `/.well-known/agent-card.json` | endpoint key | renders pages, signs offers, forwards edits to the verifier then the sealer |
+| `helix-endpoint` (`src/endpoint.ts`, `src/a2a.ts`) | `/wiki/*`, `/index`, `/.well-known/agent-card.json`, `/a2a` | endpoint key | renders pages, signs offers, forwards edits to the verifier then the sealer |
 | `helix-verifier` (`src/verifier.ts`) | `/verify` | verifier key | runs the ordered checks of `skills/verify-claim.md`, re-reads every pin, signs a `VerifyResponse`; writes nothing |
 | `helix-sealer` (`src/sealer.ts`) | `/settle` | sealer key | checks the verifier's signature and the role separation, appends, signs the receipt |
 
@@ -53,4 +55,5 @@ npm run deploy:endpoint
 ## Not implemented
 
 - Chain rows (`dna:` pages). `genome.json` `chain` is `null`, so every `dna:` template claim is refused `unknown_locus`, as the contract requires. Reading `Bases` with `eth_call` lands with the deployment of `Bases`.
+- A2A tasks and streaming: `/a2a` answers `SendMessage` with a `Message`; `GetTask` is `TaskNotFoundError` and streaming is `UnsupportedOperationError`.
 - The ooc index keeps the repository's route nodes and changelog verbatim and regenerates only the page rows and nodes.
