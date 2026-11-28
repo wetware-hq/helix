@@ -27,7 +27,7 @@ function objectText(c: Claim): string {
 }
 
 function line(c: Claim): string {
-  return "- `" + c.subject + "` " + VERB[c.predicate] + " " + objectText(c);
+  return "- `" + c.subject + "` " + (VERB[c.predicate] ?? c.predicate) + " " + objectText(c);
 }
 
 export type Sections = {
