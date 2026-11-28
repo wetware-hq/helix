@@ -30,14 +30,16 @@ export type Env = { STORE: DurableObjectNamespace<Store>; HELIX_SEED?: string };
 export class Store extends DurableObject {
   async init(): Promise<void> {
     if (await this.ctx.storage.get("helix")) return;
-    await this.ctx.storage.put("helix", 1);
-    await this.ctx.storage.put("roles", GENOME_SEED.roles);
-    await this.ctx.storage.put("chain", GENOME_SEED.chain);
-    await this.ctx.storage.put("ids", Object.keys(GENOME_SEED.loci));
-    await this.ctx.storage.put("updated", new Date().toISOString().slice(0, 10));
-    for (const [id, locus] of Object.entries(GENOME_SEED.loci)) {
-      await this.ctx.storage.put("locus:" + id, locus);
-    }
+    // One put is atomic, so a store is either fully seeded or not seeded at all.
+    const seed: Record<string, unknown> = {
+      helix: 1,
+      roles: GENOME_SEED.roles,
+      chain: GENOME_SEED.chain,
+      ids: Object.keys(GENOME_SEED.loci),
+      updated: new Date().toISOString().slice(0, 10),
+    };
+    for (const [id, locus] of Object.entries(GENOME_SEED.loci)) seed["locus:" + id] = locus;
+    await this.ctx.storage.put(seed);
   }
 
   async roles(): Promise<Roles> {
